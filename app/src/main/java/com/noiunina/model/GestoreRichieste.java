@@ -30,14 +30,10 @@ import okhttp3.Response;
 
 
 public class GestoreRichieste {
-    //Provacommit
 
     private static GestoreRichieste instance = null;
-    public static Studente studente = new Studente();
-    JSONObject jsonObject;
-    APIConnector api;
-    String URL_Broker = "http://192.168.1.216:8080/api/v1/provaBroker";
-    Credenziali credenziali;
+    public Studente studente;
+    public static String URL_BROKER = "http://192.168.0.229:8080/api/v1/provaBroker";
 
     public static GestoreRichieste getInstace() {
 
@@ -59,8 +55,6 @@ public class GestoreRichieste {
         Log.i(TAG1,studente.getUuid());
 
     }
-
-
 
     public void richiestaRegistrazione(String nome, String cognome, String corso, String email, String pwd) {
 
@@ -179,61 +173,19 @@ public class GestoreRichieste {
 
     public void richiestaRegistrazione1(String nome, String cognome, String corso, String email, String pwd) {
 
-        studente.setUuid("UIIDFALSO");
+        studente = new Studente();
+        ServizioAutenticazioneAPI servizioAutenticazioneAPI = new ServizioAutenticazioneAPI();
 
-        String TAG1 = "StudenteID";
-        Log.i(TAG1,studente.getUuid());
+        studente.setNome(nome);
+        studente.setCognome(cognome);
+        studente.setCorso(corso);
+        studente.setEmail(email);
+        studente.setPwd(pwd);
 
-        String url = "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyCVyi6NUC4iWzMdpPZ6hktYOx2i4d604dE";
+        String SIGNUP = "registrazione";
 
-        OkHttpClient client = new OkHttpClient();
+        servizioAutenticazioneAPI.registrazione(studente, URL_BROKER, SIGNUP);
 
-        RequestBody formBody = new FormBody.Builder()
-                .add("email", email)
-                .add("password", pwd)
-                .build();
-
-        Request request = new Request.Builder()
-                .url(url)
-                .post(formBody)
-                .build();
-
-        Call call = client.newCall(request);
-
-        call.enqueue(
-            new Callback() {
-                @Override
-                public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                    e.printStackTrace();
-                }
-                @Override
-                public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-                    if (response.isSuccessful()) {
-                        final String myResponse = response.body().string();
-
-                        String TAG1 = "StudenteID";
-                        Log.i(TAG1, myResponse);
-
-                        try {
-                            String Jobject = new JSONObject(myResponse).getString("localId");
-                            studente.setUuid(Jobject);
-
-                            Log.i(TAG1, studente.getUuid());
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-
-                    }
-                    else{
-                        String TAG1 = "StudenteID";
-                        Log.i(TAG1,"Non e stato possibile fare la richiesta");
-                    }
-
-                }
-            }
-            );
-
-        Log.i(TAG1,studente.getUuid());
 
     }
 

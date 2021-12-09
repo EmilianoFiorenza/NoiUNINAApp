@@ -68,7 +68,8 @@ public class RegisterActivity extends AppCompatActivity implements IRegisterView
 
     @Override
     public void showRegistrationError() {
-
+        Toast toast = Toast.makeText(getApplicationContext(),"Registrazione non riuscita.",Toast.LENGTH_SHORT);
+        toast.show();
     }
 
     @Override

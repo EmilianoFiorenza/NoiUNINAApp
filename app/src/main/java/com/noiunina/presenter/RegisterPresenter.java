@@ -9,7 +9,7 @@ import com.noiunina.view.IRegisterView;
 
 import java.io.IOException;
 
-public class RegisterPresenter {
+public class RegisterPresenter{
 
     IRegisterView iRegisterView;
 
@@ -18,8 +18,8 @@ public class RegisterPresenter {
     }
 
 
-    public void effettuaRegistrazione(String nome, String cognome, String corso, String email, String pwd, String pwd2){
 
+    public void effettuaRegistrazione(String nome, String cognome, String corso, String email, String pwd, String pwd2){
 
         if(nome.isEmpty()){
             iRegisterView.showNameError();
@@ -49,5 +49,14 @@ public class RegisterPresenter {
     public static boolean isEmailValid(CharSequence email) {
         return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
     }
+
+    public void registrazioneEseguitaConSuccesso() {
+
+    }
+
+    public void registrazioneFallita() {
+        iRegisterView.showRegistrationError();
+    }
+
 
 }
