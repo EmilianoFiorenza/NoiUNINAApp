@@ -23,12 +23,10 @@ public class LoginActivity extends AppCompatActivity implements ILoginView {
     TextView eRegistrati;
     Button eLogin;
     LoginPresenter presenter;
-    Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_main);
 
         eEmail = findViewById(R.id.etemail);
@@ -74,7 +72,6 @@ public class LoginActivity extends AppCompatActivity implements ILoginView {
     @Override
     public void showValidationPwdError() {
         ePassword.setError("Inserire una password valida");
-
     }
 
 

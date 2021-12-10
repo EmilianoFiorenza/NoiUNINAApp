@@ -1,6 +1,5 @@
 package com.noiunina.view;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -11,18 +10,12 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
+
 import com.noiunina.R;
-import com.noiunina.model.Studente;
+
 import com.noiunina.presenter.RegisterPresenter;
 
-import java.io.IOException;
+
 
 public class RegisterActivity extends AppCompatActivity implements IRegisterView{
 
@@ -68,37 +61,52 @@ public class RegisterActivity extends AppCompatActivity implements IRegisterView
 
     @Override
     public void showRegistrationError() {
-        Toast toast = Toast.makeText(getApplicationContext(),"Registrazione non riuscita.",Toast.LENGTH_SHORT);
-        toast.show();
+
+        RegisterActivity.this.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast toast = Toast.makeText(getApplicationContext(),"Registrazione non riuscita.",Toast.LENGTH_SHORT);
+                toast.show();
+            }
+        });
+
     }
 
     @Override
     public void getLoginActivity() {
-
+        RegisterActivity.this.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast toast = Toast.makeText(getApplicationContext(),"Registrazione effettuata con successo",Toast.LENGTH_SHORT);
+                toast.show();
+            }
+        });
+        Intent i = new Intent(this, LoginActivity.class);
+        startActivity(i);
     }
 
     @Override
     public void showNameError() {
-
+        registerNome.setError("Inserire un nome valido");
     }
 
     @Override
     public void showSurnameError() {
-
+        registerCognome.setError("Inserire un cognome valido");
     }
 
     @Override
     public void showEmailError() {
-
+        registerEmail.setError("Inserire una mail valida");
     }
 
     @Override
     public void showPwdError() {
-
+        registerPwd.setError("Inserire una password valida");
     }
 
     @Override
     public void showPwdMismatchError() {
-
+        registerConfermaPwd.setError("Le password non corrispondono");
     }
 }

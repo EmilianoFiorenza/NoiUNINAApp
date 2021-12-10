@@ -1,22 +1,22 @@
 package com.noiunina.presenter;
 
-
-import android.util.Log;
-
 import com.noiunina.model.GestoreRichieste;
-import com.noiunina.view.ILoginView;
 import com.noiunina.view.IRegisterView;
 
-import java.io.IOException;
 
-public class RegisterPresenter{
+public class RegisterPresenter implements IRegisterPresenter{
 
-    IRegisterView iRegisterView;
+    public static IRegisterView iRegisterView;
 
     public RegisterPresenter(IRegisterView view){
-        this.iRegisterView = view;
+
+        iRegisterView = view;
+
     }
 
+    public RegisterPresenter(){
+
+    }
 
 
     public void effettuaRegistrazione(String nome, String cognome, String corso, String email, String pwd, String pwd2){
@@ -41,8 +41,6 @@ public class RegisterPresenter{
             iRegisterView.getLoginActivity();
 
         }
-
-
     }
 
 
@@ -50,13 +48,18 @@ public class RegisterPresenter{
         return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
     }
 
+    @Override
     public void registrazioneEseguitaConSuccesso() {
-
+        iRegisterView.getLoginActivity();
     }
 
+    @Override
     public void registrazioneFallita() {
+
         iRegisterView.showRegistrationError();
+
     }
+
 
 
 }

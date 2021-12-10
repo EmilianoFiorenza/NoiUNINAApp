@@ -3,6 +3,7 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import com.noiunina.presenter.IRegisterPresenter;
 import com.noiunina.presenter.RegisterPresenter;
 import com.noiunina.view.ILoginView;
 
@@ -22,7 +23,7 @@ import okhttp3.Response;
 
 public class ServizioAutenticazioneAPI {
 
-    RegisterPresenter registerPresenter;
+    IRegisterPresenter iRegisterPresenter = new RegisterPresenter();
 
     public void registrazione(Studente studente, String URL_BROKER, String SIGNUP){
 
@@ -81,7 +82,7 @@ public class ServizioAutenticazioneAPI {
                                             }
                                             else{
 
-                                                registerPresenter.registrazioneFallita();
+                                                iRegisterPresenter.registrazioneFallita();
                                                 String TAG1 = "SERVIZIO REGISTRAZIONE";
                                                 Log.i(TAG1,"Non e stato possibile effetuare la richiesta");
                                             }
@@ -93,7 +94,7 @@ public class ServizioAutenticazioneAPI {
                         }
                         else{
 
-                            registerPresenter.registrazioneFallita();
+                            iRegisterPresenter.registrazioneFallita();
                             String TAG1 = "RISPOSTA BROKER";
                             Log.i(TAG1,"Non e stato possibile effetuare la richiesta");
                         }
@@ -161,10 +162,13 @@ public class ServizioAutenticazioneAPI {
 
                                                 String TAG1 = "SERVIZIO SET DATI UTENTE";
                                                 Log.i(TAG1,"Dati utente settati con successo!");
+
+                                                iRegisterPresenter.registrazioneEseguitaConSuccesso();
+
                                             }
                                             else{
 
-                                                registerPresenter.registrazioneFallita();
+                                                iRegisterPresenter.registrazioneFallita();
 
                                                 String TAG1 = "SERVIZIO SET DATI UTENTEE";
                                                 Log.i(TAG1,"Non e stato possibile effetuare il settaggio");
@@ -175,10 +179,12 @@ public class ServizioAutenticazioneAPI {
                         }
                         else{
 
-                            registerPresenter.registrazioneFallita();
+                            iRegisterPresenter.registrazioneFallita();
                             String TAG1 = "RISPOSTA BROKER";
                             Log.i(TAG1,"Non e stato possibile effetuare la richiesta");
                         }
+
+
                     }
                 }
         );
