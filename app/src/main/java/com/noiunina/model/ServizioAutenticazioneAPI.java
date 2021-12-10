@@ -25,6 +25,7 @@ public class ServizioAutenticazioneAPI {
 
     IRegisterPresenter iRegisterPresenter = new RegisterPresenter();
 
+
     public void registrazione(Studente studente, String URL_BROKER, String SIGNUP){
 
         OkHttpClient client = new OkHttpClient();
@@ -41,6 +42,7 @@ public class ServizioAutenticazioneAPI {
                     @Override
                     public void onFailure(@NonNull Call call, @NonNull IOException e) {
                         e.printStackTrace();
+                        iRegisterPresenter.registrazioneFallita();
                     }
                     @Override
                     public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
@@ -67,6 +69,7 @@ public class ServizioAutenticazioneAPI {
                                         @Override
                                         public void onFailure(@NonNull Call call, @NonNull IOException e) {
                                             e.printStackTrace();
+                                            iRegisterPresenter.registrazioneFallita();
                                         }
                                         @Override
                                         public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
@@ -81,7 +84,6 @@ public class ServizioAutenticazioneAPI {
 
                                             }
                                             else{
-
                                                 iRegisterPresenter.registrazioneFallita();
                                                 String TAG1 = "SERVIZIO REGISTRAZIONE";
                                                 Log.i(TAG1,"Non e stato possibile effetuare la richiesta");
@@ -93,7 +95,6 @@ public class ServizioAutenticazioneAPI {
 
                         }
                         else{
-
                             iRegisterPresenter.registrazioneFallita();
                             String TAG1 = "RISPOSTA BROKER";
                             Log.i(TAG1,"Non e stato possibile effetuare la richiesta");
@@ -121,6 +122,7 @@ public class ServizioAutenticazioneAPI {
                     @Override
                     public void onFailure(@NonNull Call call, @NonNull IOException e) {
                         e.printStackTrace();
+                        iRegisterPresenter.registrazioneFallita();
                     }
                     @Override
                     public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
@@ -155,6 +157,7 @@ public class ServizioAutenticazioneAPI {
                                         @Override
                                         public void onFailure(@NonNull Call call, @NonNull IOException e) {
                                             e.printStackTrace();
+                                            iRegisterPresenter.registrazioneFallita();
                                         }
                                         @Override
                                         public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {

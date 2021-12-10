@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -25,6 +26,7 @@ public class RegisterActivity extends AppCompatActivity implements IRegisterView
     EditText registerEmail;
     EditText registerPwd;
     EditText registerConfermaPwd;
+    ProgressBar progressBar;
 
     RegisterPresenter registerPresenter;
 
@@ -42,6 +44,7 @@ public class RegisterActivity extends AppCompatActivity implements IRegisterView
         registerEmail = findViewById(R.id.email);
         registerPwd = findViewById(R.id.pwd);
         registerConfermaPwd = findViewById(R.id.pwd1);
+        progressBar = findViewById(R.id.progressBar);
 
         registerBtn = findViewById(R.id.buttonRegister);
 
@@ -50,6 +53,7 @@ public class RegisterActivity extends AppCompatActivity implements IRegisterView
         registerBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                findViewById(R.id.progressBar).setVisibility(View.VISIBLE);
                 registerPresenter.effettuaRegistrazione(registerNome.getText().toString(), registerCognome.getText().toString(),
                         registerCorso.getSelectedItem().toString(), registerEmail.getText().toString(),registerPwd.getText().toString(),
                         registerConfermaPwd.getText().toString());
@@ -65,8 +69,10 @@ public class RegisterActivity extends AppCompatActivity implements IRegisterView
         RegisterActivity.this.runOnUiThread(new Runnable() {
             @Override
             public void run() {
+                findViewById(R.id.progressBar).setVisibility(View.GONE);
                 Toast toast = Toast.makeText(getApplicationContext(),"Registrazione non riuscita.",Toast.LENGTH_SHORT);
                 toast.show();
+
             }
         });
 
@@ -74,9 +80,11 @@ public class RegisterActivity extends AppCompatActivity implements IRegisterView
 
     @Override
     public void getLoginActivity() {
+
         RegisterActivity.this.runOnUiThread(new Runnable() {
             @Override
             public void run() {
+                findViewById(R.id.progressBar).setVisibility(View.GONE);
                 Toast toast = Toast.makeText(getApplicationContext(),"Registrazione effettuata con successo",Toast.LENGTH_SHORT);
                 toast.show();
             }
@@ -87,26 +95,31 @@ public class RegisterActivity extends AppCompatActivity implements IRegisterView
 
     @Override
     public void showNameError() {
+        findViewById(R.id.progressBar).setVisibility(View.GONE);
         registerNome.setError("Inserire un nome valido");
     }
 
     @Override
     public void showSurnameError() {
+        findViewById(R.id.progressBar).setVisibility(View.GONE);
         registerCognome.setError("Inserire un cognome valido");
     }
 
     @Override
     public void showEmailError() {
+        findViewById(R.id.progressBar).setVisibility(View.GONE);
         registerEmail.setError("Inserire una mail valida");
     }
 
     @Override
     public void showPwdError() {
+        findViewById(R.id.progressBar).setVisibility(View.GONE);
         registerPwd.setError("Inserire una password valida");
     }
 
     @Override
     public void showPwdMismatchError() {
+        findViewById(R.id.progressBar).setVisibility(View.GONE);
         registerConfermaPwd.setError("Le password non corrispondono");
     }
 }

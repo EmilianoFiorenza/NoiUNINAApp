@@ -38,7 +38,6 @@ public class RegisterPresenter implements IRegisterPresenter{
         }else{
             GestoreRichieste sys = GestoreRichieste.getInstace();
             sys.richiestaRegistrazione1(nome, cognome, corso, email, pwd);
-            iRegisterView.getLoginActivity();
 
         }
     }
