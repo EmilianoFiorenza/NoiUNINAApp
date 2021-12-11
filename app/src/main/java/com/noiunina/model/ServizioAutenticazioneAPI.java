@@ -3,9 +3,10 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import com.noiunina.presenter.ILoginPresenter;
 import com.noiunina.presenter.IRegisterPresenter;
+import com.noiunina.presenter.LoginPresenter;
 import com.noiunina.presenter.RegisterPresenter;
-import com.noiunina.view.ILoginView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -24,9 +25,171 @@ import okhttp3.Response;
 public class ServizioAutenticazioneAPI {
 
     IRegisterPresenter iRegisterPresenter = new RegisterPresenter();
+    ILoginPresenter iLoginPresenter = new LoginPresenter();
+
+    public void login(String email, String pwd, String URL_Broker, String SIGNIN){
+
+        OkHttpClient client = new OkHttpClient();
+
+        Request request = new Request.Builder()
+                .url(URL_Broker+"/"+SIGNIN)
+                .get()
+                .build();
+
+        Call call = client.newCall(request);
+
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                e.printStackTrace();
+                iLoginPresenter.loginFallito();
+            }
+
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+
+                if (response.isSuccessful()) {
+                    String url_servizio_login = response.body().string();
+
+                    String TAG1 = "RISPOSTA BROKER";
+                    Log.i(TAG1, url_servizio_login);
+
+                    RequestBody formBody = new FormBody.Builder()
+                            .add("email", email)
+                            .add("password", pwd)
+                            .build();
+
+                    Request request = new Request.Builder()
+                            .url(url_servizio_login)
+                            .post(formBody)
+                            .build();
+
+                    call = client.newCall(request);
+
+                    call.enqueue(
+                            new Callback() {
+                                @Override
+                                public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                                    e.printStackTrace();
+                                    iLoginPresenter.loginFallito();
+                                }
+                                @Override
+                                public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                                    if (response.isSuccessful()) {
+
+                                        String getDataUser = "UserData";
+
+                                        try {
+                                            String uuid = new JSONObject(response.body().string()).get("localId").toString();
+                                            String TAG1 = "SERVIZIO LOGIN";
+                                            Log.i(TAG1,"UIID utente - "+ uuid);
+                                            getDatiUtente(URL_Broker, getDataUser, uuid);
+
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                    else{
+                                        iLoginPresenter.loginFallito();
+                                        String TAG1 = "SERVIZIO LOGIN";
+                                        Log.i(TAG1,"Non e stato possibile effetuare la richiesta");
+                                    }
+                                }
+                            }
+                    );
+                }
+                else{
+                    iLoginPresenter.loginFallito();
+                    String TAG1 = "RISPOSTA BROKER";
+                    Log.i(TAG1,"Non e stato possibile effetuare la richiesta");
+                }
+            }
+        });
+    }
+
+    public void getDatiUtente(String URL_BROKER, String getDataUser, String uuid){
+
+        OkHttpClient client = new OkHttpClient();
+
+        RequestBody uuidrequest = new FormBody.Builder()
+                .add("uuid", uuid)
+                .build();
+
+        Request request = new Request.Builder()
+                .url(URL_BROKER+"/"+getDataUser)
+                .post(uuidrequest)
+                .build();
+
+        Call call = client.newCall(request);
+
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                e.printStackTrace();
+                iLoginPresenter.loginFallito();
+            }
+
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                if (response.isSuccessful()) {
+                    String url_servizio_userData = response.body().string();
+
+                    String TAG1 = "RISPOSTA BROKER";
+                    Log.i(TAG1, url_servizio_userData);
+
+                    Request request = new Request.Builder()
+                            .url(url_servizio_userData)
+                            .get()
+                            .build();
+
+                    call = client.newCall(request);
+
+                    call.enqueue(new Callback() {
+                        @Override
+                        public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                            e.printStackTrace();
+                            iLoginPresenter.loginFallito();
+                        }
+
+                        @Override
+                        public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                            if (response.isSuccessful()) {
+
+                                try {
+                                    JSONObject jsonDatiUtente = new JSONObject(response.body().string());
+
+                                    GestoreRichieste sys = GestoreRichieste.getInstance();
+
+                                    sys.setStudente(jsonDatiUtente.get("nome").toString(),jsonDatiUtente.get("cognome").toString(),
+                                            jsonDatiUtente.get("corso").toString(),jsonDatiUtente.get("email").toString());
+
+                                    iLoginPresenter.loginEseguitoConSuccesso();
 
 
-    public void registrazione(Studente studente, String URL_BROKER, String SIGNUP){
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                            else{
+                                iLoginPresenter.loginFallito();
+                                String TAG1 = "RISPOSTA GETDATA";
+                                Log.i(TAG1,"Non e stato possibile effetuare la richiesta");
+                            }
+                        }
+                    });
+
+
+                }
+                else {
+                    iLoginPresenter.loginFallito();
+                    String TAG1 = "RISPOSTA BROKER";
+                    Log.i(TAG1,"Non e stato possibile effetuare la richiesta");
+                }
+            }
+        });
+    }
+
+    public void registrazione(Studente studente, String pwd, String URL_BROKER, String SIGNUP){
 
         OkHttpClient client = new OkHttpClient();
 
@@ -54,7 +217,7 @@ public class ServizioAutenticazioneAPI {
 
                             RequestBody formBody = new FormBody.Builder()
                             .add("email", studente.getEmail())
-                            .add("password", studente.getPwd())
+                            .add("password", pwd)
                             .build();
 
                             Request request = new Request.Builder()
@@ -75,44 +238,54 @@ public class ServizioAutenticazioneAPI {
                                         public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
                                             if (response.isSuccessful()) {
 
+                                                String risposta = response.body().string();
+
                                                 String TAG1 = "SERVIZIO REGISTRAZIONE";
                                                 Log.i(TAG1,"Registrazione effettuata!");
 
-                                                String setDataUser = "setUserData";
+                                                String setDataUser = "UserData";
 
-                                                setDatiUtente(studente, URL_BROKER, setDataUser);
-
+                                                JSONObject jsonDataUser = null;
+                                                try {
+                                                    jsonDataUser = new JSONObject(risposta);
+                                                    Object jsonuuid = jsonDataUser.get("localId");
+                                                    String uuid = jsonuuid.toString();
+                                                    Log.i(TAG1,"UUID ottenuto: "+ uuid);
+                                                    setDatiUtente(studente, URL_BROKER, setDataUser, uuid);
+                                                } catch (JSONException e) {
+                                                    e.printStackTrace();
+                                                }
                                             }
                                             else{
                                                 iRegisterPresenter.registrazioneFallita();
                                                 String TAG1 = "SERVIZIO REGISTRAZIONE";
                                                 Log.i(TAG1,"Non e stato possibile effetuare la richiesta");
                                             }
-
                                         }
                                     }
                             );
-
                         }
                         else{
                             iRegisterPresenter.registrazioneFallita();
                             String TAG1 = "RISPOSTA BROKER";
                             Log.i(TAG1,"Non e stato possibile effetuare la richiesta");
                         }
-
                     }
                 }
         );
-
     }
 
-    public void setDatiUtente(Studente studente, String URL_BROKER, String setDataUser){
+    public void setDatiUtente(Studente studente, String URL_BROKER, String setDataUser, String uuid){
 
         OkHttpClient client = new OkHttpClient();
 
+        RequestBody uuidrequest = new FormBody.Builder()
+                .add("uuid", uuid)
+                .build();
+
         Request request = new Request.Builder()
                 .url(URL_BROKER+"/"+setDataUser)
-                .get()
+                .post(uuidrequest)
                 .build();
 
         Call call = client.newCall(request);
@@ -147,7 +320,7 @@ public class ServizioAutenticazioneAPI {
 
                             Request request = new Request.Builder()
                                     .url(url_servizio_setData)
-                                    .post(body)
+                                    .put(body)
                                     .build();
 
                             call = client.newCall(request);
@@ -167,7 +340,6 @@ public class ServizioAutenticazioneAPI {
                                                 Log.i(TAG1,"Dati utente settati con successo!");
 
                                                 iRegisterPresenter.registrazioneEseguitaConSuccesso();
-
                                             }
                                             else{
 
@@ -186,8 +358,6 @@ public class ServizioAutenticazioneAPI {
                             String TAG1 = "RISPOSTA BROKER";
                             Log.i(TAG1,"Non e stato possibile effetuare la richiesta");
                         }
-
-
                     }
                 }
         );

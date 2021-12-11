@@ -1,21 +1,23 @@
 package com.noiunina.presenter;
 
-
 import com.noiunina.model.GestoreRichieste;
 import com.noiunina.view.ILoginView;
 
-public class LoginPresenter{
+public class LoginPresenter implements ILoginPresenter{
 
-    ILoginView ILoginView;
+    public static ILoginView ILoginView;
 
     public LoginPresenter(ILoginView view){
 
-        this.ILoginView = view;
+        ILoginView = view;
+
+    }
+
+    public LoginPresenter(){
 
     }
 
     public void effettuaLogin(String email, String pwd){
-
 
         if(email.isEmpty() | !isEmailValid(email)){
             ILoginView.showValidationEmailError();
@@ -24,10 +26,8 @@ public class LoginPresenter{
             ILoginView.showValidationPwdError();
         }
         else{
-            GestoreRichieste sys = GestoreRichieste.getInstace();
+            GestoreRichieste sys = GestoreRichieste.getInstance();
             sys.richiestaLogin(email, pwd);
-            ILoginView.getHomeActivity();
-
         }
 
     }
@@ -36,5 +36,14 @@ public class LoginPresenter{
         return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
     }
 
+    @Override
+    public void loginEseguitoConSuccesso() {
+        ILoginView.getHomeActivity();
+    }
+
+    @Override
+    public void loginFallito() {
+        ILoginView.showError();
+    }
 }
 

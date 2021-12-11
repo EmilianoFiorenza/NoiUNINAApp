@@ -20,7 +20,6 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="5dp"
         android:layout_marginTop="20dp"
-        android:text="Nome:"
         android:textColor="@color/white"
         android:textSize="17dp" />
 
@@ -31,7 +30,6 @@
         android:layout_below="@+id/textNome"
         android:layout_alignStart="@+id/textNome"
         android:layout_marginTop="5dp"
-        android:text="Cognome:"
         android:textColor="@color/white"
         android:textSize="17dp" />
 

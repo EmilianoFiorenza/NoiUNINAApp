@@ -2,21 +2,18 @@ package com.noiunina.model;
 
 public class Studente {
 
-    public String uuid, nome,cognome, corso,email;
-    private String pwd;
-
+    public String nome,cognome, corso,email;
 
     public Studente(){
 
 
     }
 
-    public Studente(String nome, String cognome, String corso, String email, String pwd) {
+    public Studente(String nome, String cognome, String corso, String email) {
         this.nome = nome;
         this.cognome = cognome;
         this.corso = corso;
         this.email = email;
-        this.pwd = pwd;
     }
 
     public String getNome() {
@@ -44,15 +41,6 @@ public class Studente {
         this.nome = nome;
     }
 
-    public String getUuid() {
-        return uuid;
-    }
-
-    public void setUuid(String uuid) {
-        this.uuid = uuid;
-    }
-
-
     public void setCognome(String cognome) {
         this.cognome = cognome;
     }
@@ -65,12 +53,5 @@ public class Studente {
         this.email = email;
     }
 
-    public String getPwd() {
-        return pwd;
-    }
-
-    public void setPwd(String pwd) {
-        this.pwd = pwd;
-    }
 
 }

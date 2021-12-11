@@ -36,8 +36,8 @@ public class RegisterPresenter implements IRegisterPresenter{
         else if(!pwd.equals(pwd2)){
             iRegisterView.showPwdMismatchError();
         }else{
-            GestoreRichieste sys = GestoreRichieste.getInstace();
-            sys.richiestaRegistrazione1(nome, cognome, corso, email, pwd);
+            GestoreRichieste sys = GestoreRichieste.getInstance();
+            sys.richiestaRegistrazione(nome, cognome, corso, email, pwd);
 
         }
     }
