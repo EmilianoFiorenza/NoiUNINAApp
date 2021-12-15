@@ -1,10 +1,16 @@
 package com.noiunina.model;
 
+import androidx.activity.result.contract.ActivityResultContracts;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+
 public class GestoreRichieste {
 
     private static GestoreRichieste instance = null;
     public Studente studente;
     public static String URL_BROKER = "http://192.168.1.216:8080/api/v1/provaBroker";
+    ArrayList<String> listaEsami;
 
     public static GestoreRichieste getInstance() {
 
@@ -31,7 +37,6 @@ public class GestoreRichieste {
         this.studente.email = email;
     }
 
-
     public void richiestaLogin(String email, String pwd) {
 
         studente = new Studente();
@@ -57,6 +62,32 @@ public class GestoreRichieste {
 
         servizioAutenticazioneAPI.registrazione(studente, pwd, URL_BROKER, SIGNUP);
 
+    }
+
+    public void getSottoscrizioniChat(){
+
+        ServizioMessagisticaAPI servizioMessagisticaAPI = new ServizioMessagisticaAPI();
+
+        String corso = studente.getCorso();
+        String LISTACORSI = new String("ListaCorsi");
+
+        servizioMessagisticaAPI.recuperaListaCorsi(URL_BROKER, corso, LISTACORSI);
+
+    }
+
+    public void setListaSottoscrizioniDisponibili(String esami){
+
+        esami = esami.replace("\"", "");
+        esami = esami.replace("[","");
+        esami = esami.replace("]","");
+
+        listaEsami = new ArrayList<>(Arrays.asList(esami.split(",")));
+
+    }
+
+    public ArrayList<String> getListaSottoscrizioniDisponibili(){
+
+        return listaEsami;
     }
 
 

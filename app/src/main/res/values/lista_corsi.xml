@@ -3,7 +3,5 @@
     <string-array name="lista_corsi">
         <item>Laurea Magistrale in Ingegneria Informatica</item>
         <item>Laurea Triennale in Ingegneria Informatica</item>
-        <item>Laurea Triennale in Matematica</item>
-        <item>Laurea Magistrale in Data Science</item>
     </string-array>
 </resources>

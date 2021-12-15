@@ -2,7 +2,6 @@ package com.noiunina.presenter;
 
 import com.noiunina.model.GestoreRichieste;
 import com.noiunina.view.IHomeView;
-import com.noiunina.view.IRegisterView;
 
 public class HomePresenter {
 

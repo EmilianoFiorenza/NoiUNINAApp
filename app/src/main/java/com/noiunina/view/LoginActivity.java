@@ -1,5 +1,6 @@
 package com.noiunina.view;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -13,6 +14,8 @@ import android.widget.Toast;
 import com.noiunina.R;
 import com.noiunina.presenter.LoginPresenter;
 
+
+
 public class LoginActivity extends AppCompatActivity implements ILoginView {
 
     EditText eEmail;
@@ -23,11 +26,10 @@ public class LoginActivity extends AppCompatActivity implements ILoginView {
 
     LoginPresenter presenter;
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         setContentView(R.layout.activity_main);
 
         eEmail = findViewById(R.id.etemail);
