@@ -3,15 +3,20 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.noiunina.presenter.ILoginPresenter;
 import com.noiunina.presenter.IRegisterPresenter;
 import com.noiunina.presenter.LoginPresenter;
 import com.noiunina.presenter.RegisterPresenter;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.Iterator;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -157,14 +162,8 @@ public class ServizioAutenticazioneAPI {
 
                                 try {
                                     JSONObject jsonDatiUtente = new JSONObject(response.body().string());
-
-                                    GestoreRichieste sys = GestoreRichieste.getInstance();
-
-                                    sys.setStudente(jsonDatiUtente.get("nome").toString(),jsonDatiUtente.get("cognome").toString(),
+                                    iLoginPresenter.loginEseguitoConSuccesso(uuid, jsonDatiUtente.get("nome").toString(),jsonDatiUtente.get("cognome").toString(),
                                             jsonDatiUtente.get("corso").toString(),jsonDatiUtente.get("email").toString());
-
-                                    iLoginPresenter.loginEseguitoConSuccesso();
-
 
                                 } catch (JSONException e) {
                                     e.printStackTrace();
@@ -187,6 +186,89 @@ public class ServizioAutenticazioneAPI {
                 }
             }
         });
+    }
+
+    public void checkSottoscrizioni(String URL_BROKER, String uuid, String checkSottoscrizioni){
+
+        OkHttpClient client = new OkHttpClient();
+
+        RequestBody uuidrequest = new FormBody.Builder()
+                .add("uuid", uuid)
+                .build();
+
+        Request request = new Request.Builder()
+                .url(URL_BROKER+"/"+checkSottoscrizioni)
+                .post(uuidrequest)
+                .build();
+
+        Call call = client.newCall(request);
+
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                e.printStackTrace();
+                iLoginPresenter.loginFallito();
+            }
+
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                if (response.isSuccessful()) {
+                    String url_servizio_checkSottoscrizioni = response.body().string();
+
+                    String TAG1 = "RISPOSTA BROKER";
+                    Log.i(TAG1, url_servizio_checkSottoscrizioni);
+
+                    Request request = new Request.Builder()
+                            .url(url_servizio_checkSottoscrizioni)
+                            .get()
+                            .build();
+
+                    call = client.newCall(request);
+
+                    call.enqueue(new Callback() {
+                        @Override
+                        public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                            e.printStackTrace();
+                            iLoginPresenter.loginFallito();
+                        }
+
+                        @Override
+                        public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                            if (response.isSuccessful()) {
+
+                                String risposta = response.body().string();
+
+                                String TAG1 = "RISPOSTA CHECK";
+                                Log.i(TAG1,risposta);
+
+                                if(risposta.equals("null")){
+                                    iLoginPresenter.noSottoscrizioni();
+                                }
+                                else{
+                                    iLoginPresenter.siSottoscrizioni(risposta);
+                                }
+
+                            }
+                            else{
+                                iLoginPresenter.loginFallito();
+                                String TAG1 = "RISPOSTA GETDATA";
+                                Log.i(TAG1,"Non e stato possibile effetuare la richiesta");
+                            }
+                        }
+                    });
+
+
+                }
+                else {
+                    iLoginPresenter.loginFallito();
+                    String TAG1 = "RISPOSTA BROKER";
+                    Log.i(TAG1,"Non e stato possibile effetuare la richiesta");
+                }
+            }
+        });
+
+
+
     }
 
     public void registrazione(Studente studente, String pwd, String URL_BROKER, String SIGNUP){

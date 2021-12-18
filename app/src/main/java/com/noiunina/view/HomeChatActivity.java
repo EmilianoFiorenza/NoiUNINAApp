@@ -14,6 +14,7 @@ import com.noiunina.presenter.HomeChatPresenter;
 public class HomeChatActivity extends AppCompatActivity implements IHomeChatView{
 
     Button buttonSottoscrivi;
+    Button buttonListaChat;
     HomeChatPresenter presenter;
 
     @Override
@@ -22,6 +23,7 @@ public class HomeChatActivity extends AppCompatActivity implements IHomeChatView
         setContentView(R.layout.activity_home_chat);
 
         buttonSottoscrivi = findViewById(R.id.buttonSottoscritiviChat);
+        buttonListaChat = findViewById(R.id.buttonIniziaChat);
         presenter = new HomeChatPresenter(this);
 
 
@@ -31,12 +33,25 @@ public class HomeChatActivity extends AppCompatActivity implements IHomeChatView
                 presenter.getListaEsami();
             }
         });
+
+        buttonListaChat.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getApplicationContext(), ChatCorsiActivity.class));
+            }
+        });
     }
 
     @Override
     public void getSubscriptionActivityFailed() {
-        Toast toast = Toast.makeText(getApplicationContext(),"Non è stato possibile ottenre la lista chat da sottoscrivere",Toast.LENGTH_SHORT);
-        toast.show();
+        HomeChatActivity.this.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast toast = Toast.makeText(getApplicationContext(), "Non è stato possibile ottenre la lista chat da sottoscrivere", Toast.LENGTH_SHORT);
+                toast.show();
+            }
+        }
+        );
     }
 
     @Override

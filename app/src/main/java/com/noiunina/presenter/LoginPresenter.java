@@ -37,8 +37,32 @@ public class LoginPresenter implements ILoginPresenter{
     }
 
     @Override
-    public void loginEseguitoConSuccesso() {
+    public void loginEseguitoConSuccesso(String uuid, String nome, String cognome, String corso, String email) {
+
+        GestoreRichieste sys = GestoreRichieste.getInstance();
+        sys.setStudente(uuid, nome, cognome, corso, email);
+
+        sys.checkSottoscrizioni(uuid);
+
+        //ILoginView.getHomeActivity();
+    }
+
+    @Override
+    public void noSottoscrizioni() {
+
+        GestoreRichieste sys = GestoreRichieste.getInstance();
+        sys.inizializzazioneArrayListStudenteVuota();
         ILoginView.getHomeActivity();
+
+    }
+
+    @Override
+    public void siSottoscrizioni(String sottoscrizioni) {
+
+        GestoreRichieste sys = GestoreRichieste.getInstance();
+        sys.inizializzazioneArrayListStudente(sottoscrizioni);
+        ILoginView.getHomeActivity();
+
     }
 
     @Override

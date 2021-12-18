@@ -4,8 +4,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.noiunina.R;
 import com.noiunina.presenter.SubscriptionPresenter;
@@ -32,6 +35,37 @@ public class SubscriptionActivity extends AppCompatActivity implements ISubscrip
 
         listView.setAdapter(arrayAdapter);
 
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                presenter.effettuaSottoscrizione(listaEsami.get(position));
+            }
+        });
 
+
+    }
+
+    @Override
+    public void sottoscrizioneFallita() {
+        SubscriptionActivity.this.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast toast = Toast.makeText(getApplicationContext(), "Non è stato possibile effetuare la sottoscrizione", Toast.LENGTH_SHORT);
+                toast.show();
+            }
+        }
+    );
+    }
+
+    @Override
+    public void sottoscrizioneEffettuata() {
+        SubscriptionActivity.this.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast toast = Toast.makeText(getApplicationContext(), "Sottoscrizione effettuata con successo", Toast.LENGTH_SHORT);
+                toast.show();
+            }
+        }
+        );
     }
 }

@@ -1,19 +1,32 @@
 package com.noiunina.model;
 
+import java.util.ArrayList;
+
 public class Studente {
 
-    public String nome,cognome, corso,email;
+    public String uuid, nome,cognome, corso,email;
+    public ArrayList<CredenzialiChat> credenzialiChats;
 
     public Studente(){
 
 
     }
 
-    public Studente(String nome, String cognome, String corso, String email) {
+    public Studente(String uuid, String nome, String cognome, String corso, String email, ArrayList<CredenzialiChat> credenzialiChats) {
+        this.uuid=uuid;
         this.nome = nome;
         this.cognome = cognome;
         this.corso = corso;
         this.email = email;
+        this.credenzialiChats = credenzialiChats;
+    }
+
+    public String getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
     }
 
     public String getNome() {
@@ -51,6 +64,14 @@ public class Studente {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public ArrayList<CredenzialiChat> getCredenzialiChats() {
+        return credenzialiChats;
+    }
+
+    public void setCredenzialiChats(ArrayList<CredenzialiChat> credenzialiChats) {
+        this.credenzialiChats = credenzialiChats;
     }
 
 

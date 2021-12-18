@@ -1,14 +1,21 @@
 package com.noiunina.model;
 
+import android.util.Log;
+
 import androidx.activity.result.contract.ActivityResultContracts;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 
 public class GestoreRichieste {
 
     private static GestoreRichieste instance = null;
     public Studente studente;
+    public CredenzialiChat credenzialiChat;
     public static String URL_BROKER = "http://192.168.1.216:8080/api/v1/provaBroker";
     ArrayList<String> listaEsami;
 
@@ -21,6 +28,17 @@ public class GestoreRichieste {
 
     }
 
+    public void addCredenzialiChatStudente(String esame, String codiceCorso){
+
+        this.credenzialiChat = new CredenzialiChat(esame, codiceCorso);
+        String TAG = "credenziali";
+        Log.i(TAG, this.credenzialiChat.getEsame());
+        Log.i(TAG, this.credenzialiChat.getCodice());
+
+        this.studente.credenzialiChats.add(credenzialiChat);
+
+    }
+
     public String getNomeStudente() {
         return studente.getNome();
     }
@@ -30,7 +48,8 @@ public class GestoreRichieste {
         return studente.getCognome();
     }
 
-    public void setStudente(String nome, String cognome, String corso, String email){
+    public void setStudente(String uuid, String nome, String cognome, String corso, String email){
+        this.studente.uuid = uuid;
         this.studente.nome = nome;
         this.studente.cognome = cognome;
         this.studente.corso = corso;
@@ -75,6 +94,36 @@ public class GestoreRichieste {
 
     }
 
+    public void inizializzazioneArrayListStudenteVuota(){
+
+        this.studente.credenzialiChats = new ArrayList<CredenzialiChat>();
+
+    }
+
+    public void inizializzazioneArrayListStudente(String sottoscrizioni){
+
+        inizializzazioneArrayListStudenteVuota();
+
+        String TAG = "PROVACHECKGESTORERICHIESTE";
+
+        try {
+            JSONObject jsonObject = new JSONObject(sottoscrizioni.trim());
+            Iterator<String> keys = jsonObject.keys();
+
+            while(keys.hasNext()) {
+                String key = keys.next();
+
+                this.credenzialiChat = new CredenzialiChat(key, jsonObject.get(key).toString());
+                this.studente.credenzialiChats.add(credenzialiChat);
+
+            }
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+    }
+
     public void setListaSottoscrizioniDisponibili(String esami){
 
         esami = esami.replace("\"", "");
@@ -90,6 +139,40 @@ public class GestoreRichieste {
         return listaEsami;
     }
 
+    public void getCredenzialiChat(String esame){
+
+        String getCredenziali = "getCredenziali";
+        ServizioMessagisticaAPI servizioMessagisticaAPI = new ServizioMessagisticaAPI();
+        String corsoDiStudio = studente.getCorso();
+        String uuid = studente.getUuid();
+
+        servizioMessagisticaAPI.prendiCredenziali(URL_BROKER, uuid, esame, corsoDiStudio, getCredenziali);
+
+    }
+
+    public void checkSottoscrizioni(String uuid){
+
+        String checkSottoscrizioni = "checkSottoscrizioni";
+        ServizioAutenticazioneAPI servizioAutenticazioneAPI = new ServizioAutenticazioneAPI();
+
+        servizioAutenticazioneAPI.checkSottoscrizioni(URL_BROKER, uuid, checkSottoscrizioni);
+
+
+    }
+
+    public ArrayList<String> getListaChatSottoscritte(){
+
+        ArrayList<String> listaChatSottoscritte = new ArrayList<>();
+
+        for(int i=0; i<this.studente.getCredenzialiChats().size(); i++){
+
+            listaChatSottoscritte.add(this.studente.getCredenzialiChats().get(i).getEsame());
+
+        }
+
+        return listaChatSottoscritte;
+
+    }
 
 }
 
