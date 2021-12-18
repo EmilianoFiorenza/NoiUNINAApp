@@ -28,5 +28,16 @@ public class ChatCorsiPresenter {
         return listaChatSottoscritte;
 
     }
+
+    public void checkSottoscrizioniEffettuate(ArrayList<String> listaChatSottoscritte){
+
+        if(listaChatSottoscritte.isEmpty()) {
+            iChatCorsiView.mostraDisclaimer();
+        }
+        else{
+            iChatCorsiView.mostraChat();
+        }
+
+    }
 }
 

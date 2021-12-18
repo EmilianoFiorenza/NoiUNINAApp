@@ -21,7 +21,6 @@ public class SubscriptionActivity extends AppCompatActivity implements ISubscrip
     ArrayList<String> listaEsami;
     SubscriptionPresenter presenter;
     ArrayAdapter arrayAdapter;
-    boolean check;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

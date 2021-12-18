@@ -256,8 +256,6 @@ public class ServizioAutenticazioneAPI {
                             }
                         }
                     });
-
-
                 }
                 else {
                     iLoginPresenter.loginFallito();
@@ -266,9 +264,6 @@ public class ServizioAutenticazioneAPI {
                 }
             }
         });
-
-
-
     }
 
     public void registrazione(Studente studente, String pwd, String URL_BROKER, String SIGNUP){

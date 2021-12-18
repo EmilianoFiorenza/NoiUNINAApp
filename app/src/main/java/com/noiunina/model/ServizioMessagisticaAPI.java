@@ -87,10 +87,7 @@ public class ServizioMessagisticaAPI {
                                         String TAG = "Servizio Richiesta Lista Corsi";
                                         Log.i(TAG, listaCorsi);
 
-                                        GestoreRichieste sys = GestoreRichieste.getInstance();
-                                        sys.setListaSottoscrizioniDisponibili(listaCorsi);
-
-                                        iHomeChatPresenter.getSubscriptionActivity();
+                                        iHomeChatPresenter.getSubscriptionActivity(listaCorsi);
 
                                     }
                                     else{

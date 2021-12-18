@@ -35,16 +35,17 @@ public class ChatCorsiActivity extends AppCompatActivity implements IChatCorsiVi
 
         arrayAdapter = new ArrayAdapter(this, R.layout.lista_layout, listaChatSottoscritte);
 
-        if(listaChatSottoscritte.isEmpty()) {
-            disclaimerText.setText("Non hai ancora effettuato sottoscrizzioni a chat. Vai alla sezione 'Sottoscriviti a Gruppi Chat' ed iscriviti ad una chat!");
-        }
-        else{
-            listView.setAdapter(arrayAdapter);
-        }
+        presenter.checkSottoscrizioniEffettuate(listaChatSottoscritte);
 
+    }
 
+    @Override
+    public void mostraDisclaimer() {
+        disclaimerText.setText("Non hai ancora effettuato sottoscrizzioni a chat. Vai alla sezione 'Sottoscriviti a Gruppi Chat' ed iscriviti ad una chat!");
+    }
 
-
-
+    @Override
+    public void mostraChat() {
+        listView.setAdapter(arrayAdapter);
     }
 }

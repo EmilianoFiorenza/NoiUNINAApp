@@ -32,7 +32,10 @@ public class HomeChatPresenter implements IHomeChatPresenter{
     }
 
     @Override
-    public void getSubscriptionActivity() {
+    public void getSubscriptionActivity(String listaCorsi) {
+
+        GestoreRichieste sys = GestoreRichieste.getInstance();
+        sys.setListaSottoscrizioniDisponibili(listaCorsi);
 
         iHomeChatView.getSubscriptionActivitySuccess();
     }

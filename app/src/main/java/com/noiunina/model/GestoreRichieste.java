@@ -88,7 +88,7 @@ public class GestoreRichieste {
         ServizioMessagisticaAPI servizioMessagisticaAPI = new ServizioMessagisticaAPI();
 
         String corso = studente.getCorso();
-        String LISTACORSI = new String("ListaCorsi");
+        String LISTACORSI = "ListaCorsi";
 
         servizioMessagisticaAPI.recuperaListaCorsi(URL_BROKER, corso, LISTACORSI);
 
