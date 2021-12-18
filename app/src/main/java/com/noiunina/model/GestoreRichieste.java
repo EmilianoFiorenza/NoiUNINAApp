@@ -31,11 +31,19 @@ public class GestoreRichieste {
     public void addCredenzialiChatStudente(String esame, String codiceCorso){
 
         this.credenzialiChat = new CredenzialiChat(esame, codiceCorso);
-        String TAG = "credenziali";
-        Log.i(TAG, this.credenzialiChat.getEsame());
-        Log.i(TAG, this.credenzialiChat.getCodice());
-
         this.studente.credenzialiChats.add(credenzialiChat);
+
+    }
+
+    public void deleteCredenzialiChatStudente(String esame){
+
+        for(int i = 0; i<this.studente.credenzialiChats.size(); i++){
+
+            if(esame.equals(this.studente.credenzialiChats.get(i).getEsame())){
+                this.studente.credenzialiChats.remove(i);
+            }
+
+        }
 
     }
 
@@ -147,6 +155,16 @@ public class GestoreRichieste {
         String uuid = studente.getUuid();
 
         servizioMessagisticaAPI.prendiCredenziali(URL_BROKER, uuid, esame, corsoDiStudio, getCredenziali);
+
+    }
+
+    public void deleteSottoscrizioneChat(String esame){
+
+        String deleteCredenziali = "deleteSottoscrizione";
+        ServizioMessagisticaAPI servizioMessagisticaAPI = new ServizioMessagisticaAPI();
+        String uuid = studente.getUuid();
+
+        servizioMessagisticaAPI.cancellaSottoscrizione(URL_BROKER, uuid, esame, deleteCredenziali);
 
     }
 

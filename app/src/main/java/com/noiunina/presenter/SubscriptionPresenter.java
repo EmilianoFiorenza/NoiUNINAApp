@@ -34,11 +34,15 @@ public class SubscriptionPresenter implements ISubscriptionPresenter{
 
     public void effettuaSottoscrizione(String esame){
 
-        String TAG = "Sottoscrizione";
-        Log.i(TAG, esame);
-
         GestoreRichieste sys = GestoreRichieste.getInstance();
         sys.getCredenzialiChat(esame);
+
+    }
+
+    public void eliminaSottoscrizione(String esame){
+
+        GestoreRichieste sys = GestoreRichieste.getInstance();
+        sys.deleteSottoscrizioneChat(esame);
 
     }
 
@@ -60,7 +64,7 @@ public class SubscriptionPresenter implements ISubscriptionPresenter{
         }
 
         if(check){
-            iSubscriptionView.checkSottoscrizioneTrue();
+            iSubscriptionView.checkSottoscrizioneTrue(esame);
         }
         else{
             iSubscriptionView.checkSottoscrizioneFalse(esame);
@@ -68,27 +72,37 @@ public class SubscriptionPresenter implements ISubscriptionPresenter{
 
     }
 
-
-
-
     @Override
     public void sottoscrizioneFallita() {
         iSubscriptionView.sottoscrizioneFallita();
     }
 
+
+
     @Override
     public void setSottoscrizione(String esame, String codiceEsame) {
 
         GestoreRichieste sys = GestoreRichieste.getInstance();
-
-
-
         sys.addCredenzialiChatStudente(esame, codiceEsame);
 
         iSubscriptionView.sottoscrizioneEffettuata();
 
     }
 
+    @Override
+    public void eliminazioneSottoscrizioneFallita() {
+        iSubscriptionView.eliminazioneSottoscrizioneFallita();
+    }
+
+    @Override
+    public void deleteSottoscrizione(String esame) {
+
+        GestoreRichieste sys = GestoreRichieste.getInstance();
+        sys.deleteCredenzialiChatStudente(esame);
+
+        iSubscriptionView.eliminazioneSottoscrizioneEffettuata();
+
+    }
 
 
 }

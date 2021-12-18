@@ -271,5 +271,77 @@ public class ServizioMessagisticaAPI {
             );
     }
 
+    public void cancellaSottoscrizione(String URL_BROKER, String uuid, String esame, String deleteSottoscrizione) {
+
+        OkHttpClient client = new OkHttpClient();
+
+        RequestBody corsorequest = new FormBody.Builder()
+                .add("uuid", uuid)
+                .add("esame", esame)
+                .build();
+
+        Request request = new Request.Builder()
+                .url(URL_BROKER+"/"+deleteSottoscrizione)
+                .post(corsorequest)
+                .build();
+
+        Call call = client.newCall(request);
+
+        call.enqueue(
+                new Callback() {
+                    @Override
+                    public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                        e.printStackTrace();
+                        iSubscriptionPresenter.eliminazioneSottoscrizioneFallita();
+                    }
+
+                    @Override
+                    public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                        if(response.isSuccessful()){
+                            String url_cancellazioneSottoscrizione = response.body().string();
+
+                            String TAG1 = "RISPOSTA BROKER";
+                            Log.i(TAG1,url_cancellazioneSottoscrizione);
+
+                            Request request = new Request.Builder()
+                                    .url(url_cancellazioneSottoscrizione)
+                                    .delete()
+                                    .build();
+
+                            call = client.newCall(request);
+
+                            call.enqueue(new Callback() {
+                                @Override
+                                public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                                    iSubscriptionPresenter.eliminazioneSottoscrizioneFallita();
+                                    e.printStackTrace();
+                                }
+
+                                @Override
+                                public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                                    if(response.isSuccessful()){
+
+                                        String TAG1 = "RISPOSTA SERVIZIO ELIMINAZIONE SOTTOSCRIZIONE";
+                                        Log.i(TAG1,"La chat e' stata eliminata correttamente");
+
+                                        iSubscriptionPresenter.deleteSottoscrizione(esame);
+
+                                    }
+                                    else{
+                                        iSubscriptionPresenter.eliminazioneSottoscrizioneFallita();
+                                        String TAG1 = "RISPOSTA SERVIZIO ELIMINAZIONE SOTTOSCRIZIONE";
+                                        Log.i(TAG1,"Non e' stato possibile eliminare la chat");
+                                    }
+                                }
+                            });
+                        }
+                        else{
+                            iSubscriptionPresenter.eliminazioneSottoscrizioneFallita();
+                            String TAG1 = "RISPOSTA BROKER";
+                            Log.i(TAG1,"Non e stato possibile effetuare la richiesta");
+                        }
+                    }
+             });
+    }
 
 }

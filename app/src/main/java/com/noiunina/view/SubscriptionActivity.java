@@ -1,8 +1,10 @@
 package com.noiunina.view;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -69,13 +71,68 @@ public class SubscriptionActivity extends AppCompatActivity implements ISubscrip
     }
 
     @Override
-    public void checkSottoscrizioneTrue() {
-        Toast toast = Toast.makeText(getApplicationContext(), "Sei già sottoscritto a questa chat", Toast.LENGTH_SHORT);
-        toast.show();
+    public void eliminazioneSottoscrizioneFallita() {
+        SubscriptionActivity.this.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast toast = Toast.makeText(getApplicationContext(), "Non è stato possibile eliminare la sottoscrizione", Toast.LENGTH_SHORT);
+                toast.show();
+            }
+        }
+        );
+    }
+
+    @Override
+    public void eliminazioneSottoscrizioneEffettuata() {
+        SubscriptionActivity.this.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast toast = Toast.makeText(getApplicationContext(), "Sottoscrizione eliminata con successo", Toast.LENGTH_SHORT);
+                toast.show();
+            }
+        }
+        );
+    }
+
+    @Override
+    public void checkSottoscrizioneTrue(String esame) {
+
+        DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                switch (which){
+                    case DialogInterface.BUTTON_POSITIVE:
+                        presenter.eliminaSottoscrizione(esame);
+                        break;
+                    case DialogInterface.BUTTON_NEGATIVE:
+                        break;
+                }
+            }
+        };
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("Sei già iscritto alla chat: '"+esame+"'. Vuoi annullare l'iscrizione?").setPositiveButton("Si", dialogClickListener)
+                .setNegativeButton("No", dialogClickListener).show();
     }
 
     @Override
     public void checkSottoscrizioneFalse(String esame) {
-        presenter.effettuaSottoscrizione(esame);
+
+        DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                switch (which){
+                    case DialogInterface.BUTTON_POSITIVE:
+                        presenter.effettuaSottoscrizione(esame);
+                        break;
+                    case DialogInterface.BUTTON_NEGATIVE:
+                        break;
+                }
+            }
+        };
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("Vuoi iscriverti alla chat: '"+esame+"'?").setPositiveButton("Si", dialogClickListener)
+                .setNegativeButton("No", dialogClickListener).show();
     }
 }
