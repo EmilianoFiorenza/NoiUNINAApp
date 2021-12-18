@@ -22,9 +22,10 @@ public class ChatCorsiPresenter {
     public ArrayList<String> getChatSottoscritte() {
 
        GestoreRichieste sys = GestoreRichieste.getInstance();
-       ArrayList<String> listaChatSottoscritte = sys.getListaChatSottoscritte();
+       ArrayList<String> listaChatSottoscritte;
+       listaChatSottoscritte = sys.getListaChatSottoscritte();
 
-       return listaChatSottoscritte;
+        return listaChatSottoscritte;
 
     }
 }

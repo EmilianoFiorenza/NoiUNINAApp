@@ -21,6 +21,7 @@ public class SubscriptionActivity extends AppCompatActivity implements ISubscrip
     ArrayList<String> listaEsami;
     SubscriptionPresenter presenter;
     ArrayAdapter arrayAdapter;
+    boolean check;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,10 +39,9 @@ public class SubscriptionActivity extends AppCompatActivity implements ISubscrip
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                presenter.effettuaSottoscrizione(listaEsami.get(position));
+                presenter.checkSottoscrizione(listaEsami.get(position));
             }
         });
-
 
     }
 
@@ -67,5 +67,16 @@ public class SubscriptionActivity extends AppCompatActivity implements ISubscrip
             }
         }
         );
+    }
+
+    @Override
+    public void checkSottoscrizioneTrue() {
+        Toast toast = Toast.makeText(getApplicationContext(), "Sei già sottoscritto a questa chat", Toast.LENGTH_SHORT);
+        toast.show();
+    }
+
+    @Override
+    public void checkSottoscrizioneFalse(String esame) {
+        presenter.effettuaSottoscrizione(esame);
     }
 }

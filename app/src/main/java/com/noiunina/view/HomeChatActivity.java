@@ -58,4 +58,5 @@ public class HomeChatActivity extends AppCompatActivity implements IHomeChatView
     public void getSubscriptionActivitySuccess() {
         startActivity(new Intent(getApplicationContext(), SubscriptionActivity.class));
     }
+
 }
