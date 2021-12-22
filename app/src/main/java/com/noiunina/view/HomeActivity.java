@@ -43,6 +43,14 @@ public class HomeActivity extends AppCompatActivity implements IHomeView{
                 startActivity(new Intent(getApplicationContext(), HomeChatActivity.class));
             }
         });
+
+
+        btnEffettuaPrenotazione.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getApplicationContext(), SelezionaTipoPrenotazioneActivity.class));
+            }
+        });
     }
 
     @SuppressLint("SetTextI18n")

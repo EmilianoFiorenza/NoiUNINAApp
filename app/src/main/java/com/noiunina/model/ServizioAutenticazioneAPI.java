@@ -297,9 +297,9 @@ public class ServizioAutenticazioneAPI {
                             Log.i(TAG1, url_servizio_reg);
 
                             RequestBody formBody = new FormBody.Builder()
-                            .add("email", studente.getEmail())
-                            .add("password", pwd)
-                            .build();
+                                    .add("email", studente.getEmail())
+                                    .add("password", pwd)
+                                    .build();
 
                             Request request = new Request.Builder()
                                     .url(url_servizio_reg)

@@ -2,9 +2,11 @@ package com.noiunina.model;
 
 import android.util.Log;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -16,9 +18,11 @@ public class GestoreRichieste {
     public Studente studente;
     public CredenzialiChat credenzialiChat;
     public Messaggio mex;
-    public static String URL_BROKER = "http://192.168.1.216:8080/api/v1/provaBroker";
+    public static String URL_BROKER = "http://192.168.0.80:8080/api/v1/provaBroker";
     public String currentChat;
     public ArrayList<String> listaEsami;
+    public ArrayList<String> listaBiblioteche;
+    public ArrayList<String> listaStato;
     public ArrayList<Messaggio> conversazione;
 
     public static GestoreRichieste getInstance() {
@@ -144,6 +148,63 @@ public class GestoreRichieste {
 
     }
 
+    public void richiestaPrenotazione(String idBiblioteca, Timestamp oraInizio, Timestamp oraFine){
+        ServizioPrenotazioneAPI servizioPrenotazioneAPI = ServizioPrenotazioneAPI.getInstance();
+
+        String PRENOTAZIONE = "prenotazione";
+
+        servizioPrenotazioneAPI.prenotazione(this.studente.uuid, this.studente.nome, this.studente.cognome, this.studente.email, idBiblioteca, oraInizio, oraFine, URL_BROKER, PRENOTAZIONE);
+    }
+
+    public void richiestaBiblioteche(){
+        ServizioPrenotazioneAPI servizioPrenotazioneAPI = ServizioPrenotazioneAPI.getInstance();
+
+        String BIBLIOTECHE = "biblioteche";
+
+        servizioPrenotazioneAPI.getBiblioteche(URL_BROKER, BIBLIOTECHE);
+    }
+
+    public void setListaBiblioteche(JSONArray biblioteche){
+        String biblio = biblioteche.toString();
+
+        biblio = biblio.replace("\"", "");
+        biblio = biblio.replace("[","");
+        biblio = biblio.replace("]","");
+
+        listaBiblioteche = new ArrayList<>(Arrays.asList(biblio.split(",")));
+
+    }
+
+    public ArrayList<String> getListaBiblioteche(){
+
+        return listaBiblioteche;
+    }
+
+
+    public void richiestaStato(){
+        ServizioPrenotazioneAPI servizioPrenotazioneAPI = ServizioPrenotazioneAPI.getInstance();
+
+        String STATO = "stato";
+
+        servizioPrenotazioneAPI.getStato(URL_BROKER, STATO);
+    }
+
+
+    public void setListaStato(JSONArray stato) {
+        String stat = stato.toString();
+
+        stat = stat.replace("\"", "");
+        stat = stat.replace("[","");
+        stat = stat.replace("]","");
+
+        listaStato = new ArrayList<>(Arrays.asList(stat.split(",")));
+    }
+
+    public ArrayList<String> getListaStato() {
+
+        return listaStato;
+    }
+
     public void getSottoscrizioniChat(){
 
         ServizioMessagisticaAPI servizioMessagisticaAPI = ServizioMessagisticaAPI.getInstance();
@@ -238,7 +299,7 @@ public class GestoreRichieste {
             listaChatSottoscritte.add(this.studente.getCredenzialiChats().get(i).getEsame());
 
         }
-        
+
         return listaChatSottoscritte;
 
     }
@@ -278,7 +339,7 @@ public class GestoreRichieste {
     }
 
     public void inviaMessaggio(String testo){
-        
+
         String mittente = getNomeStudente()+" "+getCognomeStudente();
         String uid = getUidStudente();
 
@@ -296,8 +357,6 @@ public class GestoreRichieste {
 
     }
 
+
+
 }
-
-
-
-
