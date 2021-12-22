@@ -1,11 +1,17 @@
 package com.noiunina.presenter;
 
+import android.util.Log;
+
 import com.noiunina.model.GestoreRichieste;
 import com.noiunina.view.IChatCorsiView;
 
-import java.util.ArrayList;
+import org.json.JSONException;
+import org.json.JSONObject;
 
-public class ChatCorsiPresenter {
+import java.util.ArrayList;
+import java.util.Iterator;
+
+public class ChatCorsiPresenter implements IChatCorsiPresenter {
 
     public static IChatCorsiView iChatCorsiView;
 
@@ -29,6 +35,20 @@ public class ChatCorsiPresenter {
 
     }
 
+    public void setCurrentChat(String chat){
+
+        GestoreRichieste sys = GestoreRichieste.getInstance();
+        sys.setCurrentChat(chat);
+
+    }
+
+    public void getMessageList(String chat){
+
+        GestoreRichieste sys = GestoreRichieste.getInstance();
+        sys.getMessageList(chat);
+
+    }
+
     public void checkSottoscrizioniEffettuate(ArrayList<String> listaChatSottoscritte){
 
         if(listaChatSottoscritte.isEmpty()) {
@@ -37,7 +57,51 @@ public class ChatCorsiPresenter {
         else{
             iChatCorsiView.mostraChat();
         }
+    }
 
+    @Override
+    public void setConversazione(String conversazioneChat) {
+
+        GestoreRichieste sys = GestoreRichieste.getInstance();
+
+        String messaggio;
+        String mittente;
+        String uid;
+
+        sys.inizilizzaConversazione();
+
+        if (conversazioneChat != null) {
+
+            try {
+                JSONObject jsonObject = new JSONObject(conversazioneChat.trim());
+                Iterator<String> keys = jsonObject.keys();
+
+                while (keys.hasNext()) {
+                    String key = keys.next();
+
+                    JSONObject jsonMessaggio = new JSONObject(jsonObject.get(key).toString());
+                    mittente = jsonMessaggio.get("mittente").toString();
+                    messaggio = jsonMessaggio.get("messaggio").toString();
+                    uid = jsonMessaggio.get("uid").toString();
+
+                    Log.i("setConversazione", mittente);
+                    Log.i("setConversazione", messaggio);
+
+                    sys.addMessagioSuLista(mittente, messaggio, uid);
+
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
+        iChatCorsiView.getChatActivity();
+
+    }
+
+    @Override
+    public void ErrorGetMessages() {
+        iChatCorsiView.ErrorGetMessages();
     }
 }
 

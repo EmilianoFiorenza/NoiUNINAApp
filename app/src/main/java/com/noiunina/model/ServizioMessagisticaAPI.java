@@ -4,17 +4,19 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import com.noiunina.presenter.ChatCorsiPresenter;
+import com.noiunina.presenter.ChatPresenter;
 import com.noiunina.presenter.HomeChatPresenter;
+import com.noiunina.presenter.IChatPresenter;
 import com.noiunina.presenter.IHomeChatPresenter;
 import com.noiunina.presenter.ISubscriptionPresenter;
 import com.noiunina.presenter.SubscriptionPresenter;
+import com.noiunina.presenter.IChatCorsiPresenter;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.util.ArrayList;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -24,12 +26,26 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
-import okhttp3.ResponseBody;
 
 public class ServizioMessagisticaAPI {
 
+    private static ServizioMessagisticaAPI instance = null;
+
     IHomeChatPresenter iHomeChatPresenter = new HomeChatPresenter();
     ISubscriptionPresenter iSubscriptionPresenter = new SubscriptionPresenter();
+    IChatCorsiPresenter iChatCorsiPresenter = new ChatCorsiPresenter();
+    IChatPresenter iChatPresenter = new ChatPresenter();
+
+    public static ServizioMessagisticaAPI getInstance() {
+
+        if (instance == null) {
+            instance = new ServizioMessagisticaAPI();
+        }
+        return instance;
+
+    }
+
+    public String URL_CHAT_CORRENTE;
 
     public void recuperaListaCorsi(String URL_BROKER, String corso, String LISTACORSI){
 
@@ -342,6 +358,169 @@ public class ServizioMessagisticaAPI {
                         }
                     }
              });
+    }
+
+    public void getMessageList(String URL_BROKER, String codice, String URL_CHAT){
+
+        OkHttpClient client = new OkHttpClient();
+
+        RequestBody chatrequest = new FormBody.Builder()
+                .add("codice", codice)
+                .build();
+
+        Request request = new Request.Builder()
+                .url(URL_BROKER+"/"+URL_CHAT)
+                .post(chatrequest)
+                .build();
+
+        Call call = client.newCall(request);
+
+        call.enqueue(
+                new Callback() {
+                    @Override
+                    public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                        e.printStackTrace();
+                        iChatCorsiPresenter.ErrorGetMessages();
+                    }
+
+                    @Override
+                    public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                        if(response.isSuccessful()){
+                            URL_CHAT_CORRENTE = response.body().string();
+
+                            String TAG1 = "RISPOSTA BROKER";
+                            Log.i(TAG1,URL_CHAT_CORRENTE);
+
+                            Request request = new Request.Builder()
+                                    .url(URL_CHAT_CORRENTE)
+                                    .get()
+                                    .build();
+
+                            call = client.newCall(request);
+
+                            call.enqueue(new Callback() {
+                                @Override
+                                public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                                    iChatCorsiPresenter.ErrorGetMessages();
+                                    e.printStackTrace();
+                                }
+
+                                @Override
+                                public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                                    if(response.isSuccessful()){
+
+                                        String conversazioneChat = response.body().string();
+                                        iChatCorsiPresenter.setConversazione(conversazioneChat);
+
+                                    }
+                                    else{
+                                        iChatCorsiPresenter.ErrorGetMessages();
+                                        String TAG1 = "RISPOSTA SERVIZIO GET LISTA CHAT";
+                                        Log.i(TAG1,"Non e' stato possibile ottenere la lista chat");
+                                    }
+                                }
+                            });
+                        }
+                        else{
+                            iChatCorsiPresenter.ErrorGetMessages();
+                            String TAG1 = "RISPOSTA BROKER";
+                            Log.i(TAG1,"Non e stato possibile effetuare la richiesta");
+                        }
+                    }
+                });
+    }
+
+
+    public void invioMessaggio(String testo, String mittente, String uid){
+
+        OkHttpClient client = new OkHttpClient();
+
+        JSONObject messaggioJson = new JSONObject();
+        try{
+            messaggioJson.put("messaggio", testo);
+            messaggioJson.put("mittente", mittente);
+            messaggioJson.put("uid", uid);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+        RequestBody body = RequestBody.create(JSON, messaggioJson.toString());
+
+        Request request = new Request.Builder()
+                .url(URL_CHAT_CORRENTE)
+                .post(body)
+                .build();
+
+        Call call = client.newCall(request);
+
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                if(response.isSuccessful()){
+
+                    String risposta = response.body().string();
+                    String TAG1 = "RISPOSTA SERVIZIO INVIO LISTA CHAT";
+                    Log.i(TAG1,risposta);
+
+                    iChatPresenter.messageSent();
+
+                    refreshMessageList();
+
+                }
+                else{
+                    String TAG1 = "RISPOSTA SERVIZIO INVIO LISTA CHAT";
+                    Log.i(TAG1,"Non è stato possibile aggiornare la chat");
+                }
+
+            }
+        });
+
+
+    }
+
+    public void refreshMessageList(){
+
+        OkHttpClient client = new OkHttpClient();
+
+        Request request = new Request.Builder()
+                .url(URL_CHAT_CORRENTE)
+                .get()
+                .build();
+
+        Call call = client.newCall(request);
+
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                if(response.isSuccessful()){
+
+                    String conversazioneChat = response.body().string();
+                    String TAG1 = "RISPOSTA SERVIZIO AGGIORNA LISTA CHAT";
+                    Log.i(TAG1,conversazioneChat);
+
+                    iChatPresenter.getListaMessaggiAggiornati(conversazioneChat);
+
+                }
+                else{
+                    String TAG1 = "RISPOSTA SERVIZIO AGGIORNA LISTA CHAT";
+                    Log.i(TAG1,"Non è stato possibile aggiornare la chat");
+                }
+
+            }
+        });
+
+
     }
 
 }

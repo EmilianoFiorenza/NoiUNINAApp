@@ -14,6 +14,9 @@
         android:theme="@style/Theme.NoiUNINA"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".view.ChatActivity"
+            android:exported="false" />
+        <activity
             android:name=".view.ChatCorsiActivity"
             android:exported="false" />
         <activity

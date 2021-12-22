@@ -3,20 +3,15 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import com.noiunina.presenter.ILoginPresenter;
 import com.noiunina.presenter.IRegisterPresenter;
 import com.noiunina.presenter.LoginPresenter;
 import com.noiunina.presenter.RegisterPresenter;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.util.Iterator;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -29,8 +24,19 @@ import okhttp3.Response;
 
 public class ServizioAutenticazioneAPI {
 
+    private static ServizioAutenticazioneAPI instance = null;
+
     IRegisterPresenter iRegisterPresenter = new RegisterPresenter();
     ILoginPresenter iLoginPresenter = new LoginPresenter();
+
+    public static ServizioAutenticazioneAPI getInstance() {
+
+        if (instance == null) {
+            instance = new ServizioAutenticazioneAPI();
+        }
+        return instance;
+
+    }
 
     public void login(String email, String pwd, String URL_Broker, String SIGNIN){
 
@@ -176,8 +182,6 @@ public class ServizioAutenticazioneAPI {
                             }
                         }
                     });
-
-
                 }
                 else {
                     iLoginPresenter.loginFallito();
@@ -322,7 +326,7 @@ public class ServizioAutenticazioneAPI {
 
                                                 String setDataUser = "UserData";
 
-                                                JSONObject jsonDataUser = null;
+                                                JSONObject jsonDataUser;
                                                 try {
                                                     jsonDataUser = new JSONObject(risposta);
                                                     Object jsonuuid = jsonDataUser.get("localId");
@@ -410,7 +414,7 @@ public class ServizioAutenticazioneAPI {
                                             iRegisterPresenter.registrazioneFallita();
                                         }
                                         @Override
-                                        public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                                        public void onResponse(@NonNull Call call, @NonNull Response response){
                                             if (response.isSuccessful()) {
 
                                                 String TAG1 = "SERVIZIO SET DATI UTENTE";
@@ -419,9 +423,7 @@ public class ServizioAutenticazioneAPI {
                                                 iRegisterPresenter.registrazioneEseguitaConSuccesso();
                                             }
                                             else{
-
                                                 iRegisterPresenter.registrazioneFallita();
-
                                                 String TAG1 = "SERVIZIO SET DATI UTENTEE";
                                                 Log.i(TAG1,"Non e stato possibile effetuare il settaggio");
                                             }
@@ -430,7 +432,6 @@ public class ServizioAutenticazioneAPI {
                             );
                         }
                         else{
-
                             iRegisterPresenter.registrazioneFallita();
                             String TAG1 = "RISPOSTA BROKER";
                             Log.i(TAG1,"Non e stato possibile effetuare la richiesta");

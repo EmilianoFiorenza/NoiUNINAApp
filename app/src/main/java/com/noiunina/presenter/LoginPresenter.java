@@ -44,7 +44,7 @@ public class LoginPresenter implements ILoginPresenter{
 
         sys.checkSottoscrizioni(uuid);
 
-        //ILoginView.getHomeActivity();
+
     }
 
     @Override

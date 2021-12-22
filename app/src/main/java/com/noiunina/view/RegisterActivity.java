@@ -122,4 +122,10 @@ public class RegisterActivity extends AppCompatActivity implements IRegisterView
         findViewById(R.id.progressBar).setVisibility(View.GONE);
         registerConfermaPwd.setError("Le password non corrispondono");
     }
+
+    @Override
+    public void showPwdErrorNumberChar() {
+        findViewById(R.id.progressBar).setVisibility(View.GONE);
+        registerConfermaPwd.setError("La password deve contenere almeno 6 caratteri");
+    }
 }

@@ -3,6 +3,11 @@ package com.noiunina.presenter;
 import com.noiunina.model.GestoreRichieste;
 import com.noiunina.view.IHomeChatView;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.Iterator;
+
 public class HomeChatPresenter implements IHomeChatPresenter{
 
     public static IHomeChatView iHomeChatView;

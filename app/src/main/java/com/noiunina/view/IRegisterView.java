@@ -8,4 +8,5 @@ public interface IRegisterView {
     void showEmailError();
     void showPwdError();
     void showPwdMismatchError();
+    void showPwdErrorNumberChar();
 }

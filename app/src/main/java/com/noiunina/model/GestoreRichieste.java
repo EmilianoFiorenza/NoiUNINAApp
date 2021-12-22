@@ -2,22 +2,24 @@ package com.noiunina.model;
 
 import android.util.Log;
 
-import androidx.activity.result.contract.ActivityResultContracts;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.List;
 
 public class GestoreRichieste {
 
     private static GestoreRichieste instance = null;
     public Studente studente;
     public CredenzialiChat credenzialiChat;
+    public Messaggio mex;
     public static String URL_BROKER = "http://192.168.1.216:8080/api/v1/provaBroker";
-    ArrayList<String> listaEsami;
+    public String currentChat;
+    public ArrayList<String> listaEsami;
+    public ArrayList<Messaggio> conversazione;
 
     public static GestoreRichieste getInstance() {
 
@@ -35,6 +37,58 @@ public class GestoreRichieste {
 
     }
 
+    public void addMessagioSuLista(String mittente, String messaggio, String uid){
+
+        this.mex = new Messaggio(mittente, messaggio, uid);
+        this.conversazione.add(this.mex);
+
+    }
+
+    public void inizilizzaConversazione(){
+
+        this.conversazione = new ArrayList<Messaggio>();
+
+    }
+
+    public int getSizeMsg(){
+
+        return this.conversazione.size();
+
+    }
+
+    public ArrayList<String> getListaMittenti(){
+
+        ArrayList<String> listaMittenti = new ArrayList<>();
+
+        for(int i=0; i<this.conversazione.size(); i++){
+            listaMittenti.add(this.conversazione.get(i).getMittente());
+        }
+
+        return listaMittenti;
+    }
+
+    public ArrayList<String> getListaTestoMessaggi(){
+
+        ArrayList<String> listaTesto = new ArrayList<>();
+
+        for(int i=0; i<this.conversazione.size(); i++){
+            listaTesto.add(this.conversazione.get(i).getTesto());
+        }
+
+        return listaTesto;
+    }
+
+    public ArrayList<String> getListaUid(){
+
+        ArrayList<String> listaUid = new ArrayList<>();
+
+        for(int i=0; i<this.conversazione.size(); i++){
+            listaUid.add(this.conversazione.get(i).getUid());
+        }
+
+        return listaUid;
+    }
+
     public void deleteCredenzialiChatStudente(String esame){
 
         for(int i = 0; i<this.studente.credenzialiChats.size(); i++){
@@ -42,19 +96,18 @@ public class GestoreRichieste {
             if(esame.equals(this.studente.credenzialiChats.get(i).getEsame())){
                 this.studente.credenzialiChats.remove(i);
             }
-
         }
-
     }
 
     public String getNomeStudente() {
         return studente.getNome();
     }
 
-
     public String getCognomeStudente() {
         return studente.getCognome();
     }
+
+    public String getUidStudente(){ return studente.getUuid();}
 
     public void setStudente(String uuid, String nome, String cognome, String corso, String email){
         this.studente.uuid = uuid;
@@ -67,7 +120,7 @@ public class GestoreRichieste {
     public void richiestaLogin(String email, String pwd) {
 
         studente = new Studente();
-        ServizioAutenticazioneAPI servizioAutenticazioneAPI = new ServizioAutenticazioneAPI();
+        ServizioAutenticazioneAPI servizioAutenticazioneAPI = ServizioAutenticazioneAPI.getInstance();
 
         String SIGNIN = "login";
 
@@ -78,7 +131,7 @@ public class GestoreRichieste {
     public void richiestaRegistrazione(String nome, String cognome, String corso, String email, String pwd) {
 
         studente = new Studente();
-        ServizioAutenticazioneAPI servizioAutenticazioneAPI = new ServizioAutenticazioneAPI();
+        ServizioAutenticazioneAPI servizioAutenticazioneAPI = ServizioAutenticazioneAPI.getInstance();
 
         studente.setNome(nome);
         studente.setCognome(cognome);
@@ -93,7 +146,7 @@ public class GestoreRichieste {
 
     public void getSottoscrizioniChat(){
 
-        ServizioMessagisticaAPI servizioMessagisticaAPI = new ServizioMessagisticaAPI();
+        ServizioMessagisticaAPI servizioMessagisticaAPI = ServizioMessagisticaAPI.getInstance();
 
         String corso = studente.getCorso();
         String LISTACORSI = "ListaCorsi";
@@ -111,8 +164,6 @@ public class GestoreRichieste {
     public void inizializzazioneArrayListStudente(String sottoscrizioni){
 
         inizializzazioneArrayListStudenteVuota();
-
-        String TAG = "PROVACHECKGESTORERICHIESTE";
 
         try {
             JSONObject jsonObject = new JSONObject(sottoscrizioni.trim());
@@ -150,7 +201,7 @@ public class GestoreRichieste {
     public void getCredenzialiChat(String esame){
 
         String getCredenziali = "getCredenziali";
-        ServizioMessagisticaAPI servizioMessagisticaAPI = new ServizioMessagisticaAPI();
+        ServizioMessagisticaAPI servizioMessagisticaAPI = ServizioMessagisticaAPI.getInstance();
         String corsoDiStudio = studente.getCorso();
         String uuid = studente.getUuid();
 
@@ -161,7 +212,7 @@ public class GestoreRichieste {
     public void deleteSottoscrizioneChat(String esame){
 
         String deleteCredenziali = "deleteSottoscrizione";
-        ServizioMessagisticaAPI servizioMessagisticaAPI = new ServizioMessagisticaAPI();
+        ServizioMessagisticaAPI servizioMessagisticaAPI = ServizioMessagisticaAPI.getInstance();
         String uuid = studente.getUuid();
 
         servizioMessagisticaAPI.cancellaSottoscrizione(URL_BROKER, uuid, esame, deleteCredenziali);
@@ -171,7 +222,7 @@ public class GestoreRichieste {
     public void checkSottoscrizioni(String uuid){
 
         String checkSottoscrizioni = "checkSottoscrizioni";
-        ServizioAutenticazioneAPI servizioAutenticazioneAPI = new ServizioAutenticazioneAPI();
+        ServizioAutenticazioneAPI servizioAutenticazioneAPI = ServizioAutenticazioneAPI.getInstance();
 
         servizioAutenticazioneAPI.checkSottoscrizioni(URL_BROKER, uuid, checkSottoscrizioni);
 
@@ -187,8 +238,61 @@ public class GestoreRichieste {
             listaChatSottoscritte.add(this.studente.getCredenzialiChats().get(i).getEsame());
 
         }
-
+        
         return listaChatSottoscritte;
+
+    }
+
+    public void setCurrentChat(String chat){
+
+        this.currentChat = chat;
+
+    }
+
+    public String getCurrentChatTitle(){
+
+        return this.currentChat;
+
+    }
+
+    public void getMessageList(String chat){
+
+        String codice = null;
+        int i = 0;
+        boolean trovato = false;
+
+        while(i<this.studente.credenzialiChats.size() && !trovato){
+            if(chat.equals(this.studente.getCredenzialiChats().get(i).getEsame())){
+                codice = this.studente.credenzialiChats.get(i).getCodice();
+                trovato = true;
+            }
+            else{
+                i++;
+            }
+        }
+
+        ServizioMessagisticaAPI servizioMessagisticaAPI = ServizioMessagisticaAPI.getInstance();
+        String chatURL = "myChat";
+        servizioMessagisticaAPI.getMessageList(URL_BROKER, codice, chatURL);
+
+    }
+
+    public void inviaMessaggio(String testo){
+        
+        String mittente = getNomeStudente()+" "+getCognomeStudente();
+        String uid = getUidStudente();
+
+        ServizioMessagisticaAPI servizioMessagisticaAPI = ServizioMessagisticaAPI.getInstance();
+        servizioMessagisticaAPI.invioMessaggio(testo, mittente, uid);
+
+    }
+
+    public void aggiornaListaMessaggi(){
+
+        ServizioMessagisticaAPI servizioMessagisticaAPI = ServizioMessagisticaAPI.getInstance();
+
+        servizioMessagisticaAPI.refreshMessageList();
+
 
     }
 

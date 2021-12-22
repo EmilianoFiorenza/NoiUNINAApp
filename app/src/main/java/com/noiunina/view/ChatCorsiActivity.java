@@ -3,10 +3,14 @@ package com.noiunina.view;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.noiunina.R;
 import com.noiunina.presenter.ChatCorsiPresenter;
@@ -37,8 +41,16 @@ public class ChatCorsiActivity extends AppCompatActivity implements IChatCorsiVi
 
         presenter.checkSottoscrizioniEffettuate(listaChatSottoscritte);
 
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                presenter.setCurrentChat(listaChatSottoscritte.get(position));
+                presenter.getMessageList(listaChatSottoscritte.get(position));
+            }
+        });
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public void mostraDisclaimer() {
         disclaimerText.setText("Non hai ancora effettuato sottoscrizzioni a chat. Vai alla sezione 'Sottoscriviti a Gruppi Chat' ed iscriviti ad una chat!");
@@ -47,5 +59,21 @@ public class ChatCorsiActivity extends AppCompatActivity implements IChatCorsiVi
     @Override
     public void mostraChat() {
         listView.setAdapter(arrayAdapter);
+    }
+
+    @Override
+    public void getChatActivity() {
+        startActivity(new Intent(getApplicationContext(), ChatActivity.class));
+    }
+
+    @Override
+    public void ErrorGetMessages() {
+        ChatCorsiActivity.this.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast toast = Toast.makeText(getApplicationContext(),"Non è stato possibile aprire la chat. Riprovare.",Toast.LENGTH_SHORT);
+                toast.show();
+            }
+        });
     }
 }
