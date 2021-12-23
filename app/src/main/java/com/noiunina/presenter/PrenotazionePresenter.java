@@ -25,27 +25,7 @@ public class PrenotazionePresenter implements IPrenotazionePresenter{
 
     }
 
-    @Override
-    public void setBiblioteche(JSONArray biblioteche) {
-        GestoreRichieste sys = GestoreRichieste.getInstance();
-
-        sys.setListaBiblioteche(biblioteche);
-    }
-
-    @Override
-    public ArrayList<String> getBiblioteche(){
-
-        ArrayList<String> listaBiblioteche;
-        GestoreRichieste sys = GestoreRichieste.getInstance();
-
-        sys.richiestaBiblioteche();
-
-        listaBiblioteche = sys.getListaBiblioteche();
-
-        return listaBiblioteche;
-
-    }
-
+/*
     @Override
     public void setStato(JSONArray stato) {
         GestoreRichieste sys = GestoreRichieste.getInstance();
@@ -64,6 +44,7 @@ public class PrenotazionePresenter implements IPrenotazionePresenter{
 
         return listaStato;
     }
+*/
 
     @Override
     public void effettuaPrenotazione(String idBiblioteca, Timestamp oraInizio, Timestamp oraFine){

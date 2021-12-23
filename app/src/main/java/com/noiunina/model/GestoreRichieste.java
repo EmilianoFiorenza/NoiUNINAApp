@@ -180,7 +180,7 @@ public class GestoreRichieste {
         return listaBiblioteche;
     }
 
-
+/*
     public void richiestaStato(){
         ServizioPrenotazioneAPI servizioPrenotazioneAPI = ServizioPrenotazioneAPI.getInstance();
 
@@ -204,6 +204,8 @@ public class GestoreRichieste {
 
         return listaStato;
     }
+
+*/
 
     public void getSottoscrizioniChat(){
 

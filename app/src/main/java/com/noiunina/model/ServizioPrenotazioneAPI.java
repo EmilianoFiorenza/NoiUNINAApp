@@ -4,6 +4,8 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import com.noiunina.presenter.HomePrenotazionePresenter;
+import com.noiunina.presenter.IHomePrenotazionePresenter;
 import com.noiunina.presenter.IPrenotazionePresenter;
 import com.noiunina.presenter.PrenotazionePresenter;
 
@@ -26,6 +28,7 @@ public class ServizioPrenotazioneAPI {
 
     private static ServizioPrenotazioneAPI instance = null;
 
+    IHomePrenotazionePresenter iHomePrenotazionePresenter = new HomePrenotazionePresenter();
     IPrenotazionePresenter iPrenotazionePresenter = new PrenotazionePresenter();
 
     public static ServizioPrenotazioneAPI getInstance() {
@@ -63,7 +66,6 @@ public class ServizioPrenotazioneAPI {
                     Log.i(TAG, url_servizio_prenotazione);
 
                     RequestBody formBody = new FormBody.Builder()
-                            .add("uuid", uuid)
                             .add("nome", nome)
                             .add("cognome", cognome)
                             .add("email", email)
@@ -129,7 +131,7 @@ public class ServizioPrenotazioneAPI {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
                 e.printStackTrace();
-                //iPrenotazionePresenter.getBibliotecheFallita();
+                //iHomePrenotazionePresenter.getBibliotecheFallita();
             }
 
             @Override
@@ -152,7 +154,7 @@ public class ServizioPrenotazioneAPI {
                                 @Override
                                 public void onFailure(@NonNull Call call, @NonNull IOException e) {
                                     e.printStackTrace();
-                                    //iPrenotazionePresenter.getBibliotecheFallita();
+                                    //iHomePrenotazionePresenter.getBibliotecheFallita();
                                 }
 
                                 @Override
@@ -164,7 +166,7 @@ public class ServizioPrenotazioneAPI {
                                         try {
 
                                             JSONArray biblioteche = new JSONArray(response.body().string());
-                                            iPrenotazionePresenter.setBiblioteche(biblioteche);
+                                            iHomePrenotazionePresenter.setBiblioteche(biblioteche);
 
                                         } catch (JSONException e) {
                                             e.printStackTrace();
@@ -172,7 +174,7 @@ public class ServizioPrenotazioneAPI {
 
                                     }
                                     else{
-                                        iPrenotazionePresenter.prenotazioneFallita();
+                                        //iHomePrenotazionePresenter.getbibliotecheFallita();
                                         String TAG = "SERVIZIO BIBLIOTECHE";
                                         Log.i(TAG, "Impossibile recuperare le biblioteche");
                                     }
@@ -182,7 +184,7 @@ public class ServizioPrenotazioneAPI {
                     );
                 }
                 else{
-                    //iPrenotazionePresenter.getBibliotecheFallita();
+                    //iHomePrenotazionePresenter.getBibliotecheFallita();
                     String TAG = "SERVIZIO BIBLIOTECHE";
                     Log.i(TAG, "Impossibile recuperare le biblioteche");
                 }
@@ -191,13 +193,13 @@ public class ServizioPrenotazioneAPI {
 
 
     }
-
-    public void getStato(String URL_BROKER, String STATO){
+/*
+    public void getStato(String URL_BROKER, String STATO){ //va aggiunto idBiblioteca
         OkHttpClient client = new OkHttpClient();
 
         Request request = new Request.Builder()
                 .url(URL_BROKER+"/"+STATO)
-                .get()
+                .get() //post idBiblioteca
                 .build();
 
         Call call = client.newCall(request);
@@ -267,4 +269,6 @@ public class ServizioPrenotazioneAPI {
         });
     }
 
+
+ */
 }
