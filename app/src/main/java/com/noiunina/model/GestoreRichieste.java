@@ -18,7 +18,7 @@ public class GestoreRichieste {
     public Studente studente;
     public CredenzialiChat credenzialiChat;
     public Messaggio mex;
-    public static String URL_BROKER = "http://192.168.0.80:8080/api/v1/provaBroker";
+    public static String URL_BROKER = "http://192.168.1.216:8080/api/v1/provaBroker";
     public String currentChat;
     public ArrayList<String> listaEsami;
     public ArrayList<String> listaBiblioteche;
@@ -360,5 +360,15 @@ public class GestoreRichieste {
     }
 
 
+    public void effettuaTraduzione(String testo){
+
+        ServizioTraduzioneAPI servizioTraduzioneAPI = ServizioTraduzioneAPI.getInstance();
+
+        String traduzioneTesto = "traduzioneTesto";
+
+        servizioTraduzioneAPI.traduzioneTesto(URL_BROKER, testo, traduzioneTesto);
+
+
+    }
 
 }

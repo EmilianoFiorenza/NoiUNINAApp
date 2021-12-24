@@ -51,7 +51,19 @@ public class HomeActivity extends AppCompatActivity implements IHomeView{
                 startActivity(new Intent(getApplicationContext(), SelezionaTipoPrenotazioneActivity.class));
             }
         });
+
+        btnTraduciTesto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getApplicationContext(), TraduzioneActivity.class));
+            }
+        });
+
+
     }
+
+
+
 
     @SuppressLint("SetTextI18n")
     @Override
