@@ -77,8 +77,6 @@ public class ChatActivity extends AppCompatActivity implements IChatView{
         titoloChat.setText(chatTitle);
     }
 
-
-
     @UiThread
     @Override
     public void refreshRecyclerView(ArrayList<String> listaTestoMessaggi, ArrayList<String> listaMittenti, ArrayList<String> listaUid) {
@@ -94,7 +92,6 @@ public class ChatActivity extends AppCompatActivity implements IChatView{
                 recyclerView.setAdapter(adapter);
             }
         });
-
 
     }
 

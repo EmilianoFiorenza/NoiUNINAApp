@@ -14,9 +14,14 @@
         <entry key="..\:/Users/emili/AndroidStudioProjects/NoiUNINAApp/app/src/main/res/drawable/ic_baseline_check_box_outline_blank_24.xml" value="0.2703125" />
         <entry key="..\:/Users/emili/AndroidStudioProjects/NoiUNINAApp/app/src/main/res/layout/activity_chat.xml" value="0.176" />
         <entry key="..\:/Users/emili/AndroidStudioProjects/NoiUNINAApp/app/src/main/res/layout/activity_chat_corsi.xml" value="0.165625" />
+        <entry key="..\:/Users/emili/AndroidStudioProjects/NoiUNINAApp/app/src/main/res/layout/activity_dati_prenotazione.xml" value="0.2" />
         <entry key="..\:/Users/emili/AndroidStudioProjects/NoiUNINAApp/app/src/main/res/layout/activity_home.xml" value="0.20833333333333334" />
         <entry key="..\:/Users/emili/AndroidStudioProjects/NoiUNINAApp/app/src/main/res/layout/activity_home_chat.xml" value="0.176" />
+        <entry key="..\:/Users/emili/AndroidStudioProjects/NoiUNINAApp/app/src/main/res/layout/activity_lista_biblioteche.xml" value="0.16614583333333333" />
+        <entry key="..\:/Users/emili/AndroidStudioProjects/NoiUNINAApp/app/src/main/res/layout/activity_lista_prenotazioni.xml" value="0.16614583333333333" />
         <entry key="..\:/Users/emili/AndroidStudioProjects/NoiUNINAApp/app/src/main/res/layout/activity_main.xml" value="0.165625" />
+        <entry key="..\:/Users/emili/AndroidStudioProjects/NoiUNINAApp/app/src/main/res/layout/activity_prenotazione.xml" value="0.264" />
+        <entry key="..\:/Users/emili/AndroidStudioProjects/NoiUNINAApp/app/src/main/res/layout/activity_qrcode.xml" value="0.2391304347826087" />
         <entry key="..\:/Users/emili/AndroidStudioProjects/NoiUNINAApp/app/src/main/res/layout/activity_register.xml" value="0.165625" />
         <entry key="..\:/Users/emili/AndroidStudioProjects/NoiUNINAApp/app/src/main/res/layout/activity_seleziona_tipo_prenotazione.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/emili/AndroidStudioProjects/NoiUNINAApp/app/src/main/res/layout/activity_subscription.xml" value="0.25416666666666665" />
@@ -24,6 +29,7 @@
         <entry key="..\:/Users/emili/AndroidStudioProjects/NoiUNINAApp/app/src/main/res/layout/layout_border_color.xml" value="0.24592391304347827" />
         <entry key="..\:/Users/emili/AndroidStudioProjects/NoiUNINAApp/app/src/main/res/layout/layout_recyclerview_item.xml" value="0.1" />
         <entry key="..\:/Users/emili/AndroidStudioProjects/NoiUNINAApp/app/src/main/res/layout/layout_recyclerview_item_left.xml" value="0.136" />
+        <entry key="..\:/Users/emili/AndroidStudioProjects/NoiUNINAApp/app/src/main/res/layout/layout_recyclerview_item_prenotazioni.xml" value="0.16614583333333333" />
         <entry key="..\:/Users/emili/AndroidStudioProjects/NoiUNINAApp/app/src/main/res/layout/layout_recyclerview_item_right.xml" value="0.136" />
         <entry key="..\:/Users/emili/AndroidStudioProjects/NoiUNINAApp/app/src/main/res/layout/lista_layout.xml" value="0.264" />
       </map>

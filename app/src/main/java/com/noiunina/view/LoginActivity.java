@@ -1,4 +1,7 @@
 package com.noiunina.view;
+import androidx.activity.OnBackPressedCallback;
+import androidx.activity.OnBackPressedDispatcher;
+import androidx.activity.OnBackPressedDispatcherOwner;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 
@@ -14,9 +17,7 @@ import android.widget.Toast;
 import com.noiunina.R;
 import com.noiunina.presenter.LoginPresenter;
 
-
-
-public class LoginActivity extends AppCompatActivity implements ILoginView {
+public class LoginActivity extends AppCompatActivity implements ILoginView{
 
     EditText eEmail;
     EditText ePassword;
@@ -63,7 +64,7 @@ public class LoginActivity extends AppCompatActivity implements ILoginView {
             @Override
             public void run() {
                 findViewById(R.id.progressBar).setVisibility(View.GONE);
-                Toast toast = Toast.makeText(getApplicationContext(),"Utente non registrato o email/password errata",Toast.LENGTH_SHORT);
+                Toast toast = Toast.makeText(getApplicationContext(),"Non è stato possibile effettuare il login",Toast.LENGTH_SHORT);
                 toast.show();
             }
         });
@@ -80,17 +81,19 @@ public class LoginActivity extends AppCompatActivity implements ILoginView {
             }
         });
         startActivity(new Intent(getApplicationContext(), HomeActivity.class));
+        finish();
     }
 
     @Override
     public void showValidationEmailError() {
+        findViewById(R.id.progressBar).setVisibility(View.GONE);
         eEmail.setError("Inserire una email valida");
     }
 
     @Override
     public void showValidationPwdError() {
+        findViewById(R.id.progressBar).setVisibility(View.GONE);
         ePassword.setError("Inserire una password valida");
     }
-
 
 }

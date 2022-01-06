@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".view.SelezionaTipoPrenotazioneActivity">
+    tools:context=".view.HomePrenotazioneActivity">
 
     <ImageView
         android:id="@+id/barra_superiore"
@@ -47,7 +47,7 @@
                 android:textSize="15dp" />
 
             <Button
-                android:id="@+id/buttonAccediListaPrenotazioni"
+                android:id="@+id/buttonAccediListaBiblioteche"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/textIstruzioniListaPrenotazioni"
@@ -63,7 +63,7 @@
                 android:id="@+id/textIstruzioniQRCode"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/buttonAccediListaPrenotazioni"
+                android:layout_below="@+id/buttonAccediListaBiblioteche"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="50dp"
                 android:text="Utilizza la fotocamera e inquadra il QR Code messo a disposizione dalla biblioteca per accedere al form di prenotazione"
@@ -81,6 +81,19 @@
                 android:backgroundTint="#359BEC"
                 android:ems="15"
                 android:text="Prenota con QR Code"
+                android:textColor="@color/white"
+                app:cornerRadius="20dp" />
+
+            <Button
+                android:id="@+id/btnVisualizzaPrenotazioniEffettuate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/buttonQRCode"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="70dp"
+                android:backgroundTint="#B3420E"
+                android:ems="15"
+                android:text="Visualizza le tue Prenotazioni"
                 android:textColor="@color/white"
                 app:cornerRadius="20dp" />
 

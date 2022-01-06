@@ -1,16 +1,18 @@
 package com.noiunina.presenter;
 
+import android.os.Build;
+
+import androidx.annotation.RequiresApi;
+
 import com.noiunina.model.GestoreRichieste;
+import com.noiunina.view.IPrenotazioneView;
 
-import org.json.JSONArray;
-
-import java.sql.Time;
-import java.sql.Timestamp;
-import java.util.ArrayList;
+import java.time.LocalDate;
+import java.time.LocalTime;
 
 public class PrenotazionePresenter implements IPrenotazionePresenter{
 
-    /*
+
     public static IPrenotazioneView iPrenotazioneView;
 
     public PrenotazionePresenter(IPrenotazioneView view){
@@ -18,47 +20,62 @@ public class PrenotazionePresenter implements IPrenotazionePresenter{
         iPrenotazioneView = view;
 
     }
-     */
-
 
     public PrenotazionePresenter(){
 
     }
 
-/*
-    @Override
-    public void setStato(JSONArray stato) {
+    public String getNomeBiblioteca(){
+
         GestoreRichieste sys = GestoreRichieste.getInstance();
 
-        sys.setListaStato(stato);
+        return sys.getNomeBiblioteca();
+    }
+
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public void effettuaPrenotazione(String nomeBiblioteca, String dataPren, String oraInizio, String oraFine){
+
+        LocalDate data = LocalDate.parse(dataPren);
+        LocalTime startTime = LocalTime.parse(oraInizio);
+        LocalTime endTime = LocalTime.parse(oraFine);
+
+        if(data.isBefore(LocalDate.now())){
+            iPrenotazioneView.showDataError();
+        }
+        else if(endTime.isBefore(startTime)){
+            iPrenotazioneView.showTimeError();
+        }
+        else if(startTime.isBefore(LocalTime.now())){
+            iPrenotazioneView.showTimeErrorWithCurrentTime();
+        }
+        else if(oraInizio.equals(oraFine)){
+            iPrenotazioneView.showTimeErrorEquals();
+        }
+        else{
+            GestoreRichieste sys = GestoreRichieste.getInstance();
+            sys.effettuaPrenotazione(nomeBiblioteca, dataPren, oraInizio, oraFine);
+
+        }
+
+    }
+
+
+    @Override
+    public void showReservationError() {
+
+        iPrenotazioneView.showReservationError();
+
     }
 
     @Override
-    public ArrayList<String> getStato() {
-        ArrayList<String> listaStato;
+    public void aggiungiPrenotazione(String id, String nomeBiblioteca, String oraInizio, String oraFine, String dataPren) {
+
         GestoreRichieste sys = GestoreRichieste.getInstance();
+        oraInizio = oraInizio+":00";
+        oraFine = oraFine+":00";
+        sys.addPrenotazione(id, nomeBiblioteca, oraInizio, oraFine, dataPren);
 
-        sys.richiestaStato();
-
-        listaStato = sys.getListaStato();
-
-        return listaStato;
-    }
-*/
-
-    @Override
-    public void effettuaPrenotazione(String idBiblioteca, Timestamp oraInizio, Timestamp oraFine){
-        GestoreRichieste sys = GestoreRichieste.getInstance();
-        sys.richiestaPrenotazione(idBiblioteca, oraInizio, oraFine);
-    }
-
-    @Override
-    public void prenotazioneEseguitaConSuccesso() {
-
-    }
-
-    @Override
-    public void prenotazioneFallita() {
-        //IPrenotazioneView.showError();
+        iPrenotazioneView.showReservationSuccessful();
     }
 }

@@ -6,10 +6,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 
 public interface IPrenotazionePresenter {
-//    void setStato(JSONArray stato);
-//    ArrayList<String> getStato();
-    void effettuaPrenotazione(String idBiblioteca, Timestamp oraInizio, Timestamp oraFine);
-    void prenotazioneEseguitaConSuccesso();
-    void prenotazioneFallita();
 
+    void showReservationError();
+    void aggiungiPrenotazione(String id, String nomeBiblioteca, String oraInizio, String oraFine, String dataPren);
 }

@@ -3,6 +3,9 @@ package com.noiunina.presenter;
 import com.noiunina.model.GestoreRichieste;
 import com.noiunina.view.ILoginView;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 public class LoginPresenter implements ILoginPresenter{
 
     public static ILoginView ILoginView;
@@ -37,30 +40,58 @@ public class LoginPresenter implements ILoginPresenter{
     }
 
     @Override
-    public void loginEseguitoConSuccesso(String uuid, String nome, String cognome, String corso, String email) {
+    public void memorizzaDatiStudente(String uuid, String risposta) {
 
         GestoreRichieste sys = GestoreRichieste.getInstance();
-        sys.setStudente(uuid, nome, cognome, corso, email);
 
-        sys.checkSottoscrizioni(uuid);
+        try {
+            JSONObject jsonDatiUtente = new JSONObject(risposta);
+            sys.setStudente(uuid, jsonDatiUtente.get("nome").toString(), jsonDatiUtente.get("cognome").toString(),
+                    jsonDatiUtente.get("corso").toString(), jsonDatiUtente.get("email").toString());
+            sys.checkSottoscrizioni(uuid);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    @Override
+    public void checkSottoscrizioni(String risposta) {
+
+        GestoreRichieste sys = GestoreRichieste.getInstance();
+
+        if(risposta.equals("null")){
+            sys.inizializzazioneArrayListSottoscrizioniStudenteVuota();
+        }
+        else{
+            sys.inizializzazioneArrayListSottoscrizioniStudente(risposta);
+        }
+
+        sys.checkPrenotazioni();
+
 
 
     }
 
     @Override
-    public void noSottoscrizioni() {
+    public void prenotazioniTrovate(String risposta) {
 
         GestoreRichieste sys = GestoreRichieste.getInstance();
-        sys.inizializzazioneArrayListStudenteVuota();
+
+        sys.inizializzazioneArrayListPrenotazioniStudente(risposta);
+
         ILoginView.getHomeActivity();
 
     }
 
     @Override
-    public void siSottoscrizioni(String sottoscrizioni) {
+    public void prenotazioniNonTrovate() {
 
         GestoreRichieste sys = GestoreRichieste.getInstance();
-        sys.inizializzazioneArrayListStudente(sottoscrizioni);
+
+        sys.inizializzazioneArrayListPrenotazioniStudenteVuota();
+
         ILoginView.getHomeActivity();
 
     }

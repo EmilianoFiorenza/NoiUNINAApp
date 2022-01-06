@@ -7,13 +7,14 @@ import androidx.annotation.NonNull;
 import com.noiunina.presenter.HomePrenotazionePresenter;
 import com.noiunina.presenter.IHomePrenotazionePresenter;
 import com.noiunina.presenter.IPrenotazionePresenter;
+import com.noiunina.presenter.IQRCodePresenter;
 import com.noiunina.presenter.PrenotazionePresenter;
+import com.noiunina.presenter.QRCodePresenter;
 
-import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
-import java.sql.Timestamp;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -30,6 +31,8 @@ public class ServizioPrenotazioneAPI {
 
     IHomePrenotazionePresenter iHomePrenotazionePresenter = new HomePrenotazionePresenter();
     IPrenotazionePresenter iPrenotazionePresenter = new PrenotazionePresenter();
+    IQRCodePresenter iqrCodePresenter = new QRCodePresenter();
+
 
     public static ServizioPrenotazioneAPI getInstance() {
 
@@ -39,7 +42,160 @@ public class ServizioPrenotazioneAPI {
         return instance;
     }
 
-    public void prenotazione(String uuid, String nome, String cognome, String email, String idBiblioteca, Timestamp oraInizio, Timestamp oraFine, String URL_BROKER, String PRENOTAZIONE){
+
+    public void recuperaListaBibliotecheDisponibili(String URL_BROKER, String LISTA_BIBLIOTECHE_DISPONIBILI){
+
+        OkHttpClient client = new OkHttpClient();
+
+        Request request = new Request.Builder()
+                .url(URL_BROKER+"/"+LISTA_BIBLIOTECHE_DISPONIBILI)
+                .get()
+                .build();
+
+        Call call = client.newCall(request);
+
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                e.printStackTrace();
+                iHomePrenotazionePresenter.getListaBibliotecheError();
+            }
+
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                if(response.isSuccessful()){
+
+                    String url_recupero_lista_biblioteche = response.body().string();
+
+                    String TAG1 = "RISPOSTA BROKER";
+                    Log.i(TAG1,url_recupero_lista_biblioteche);
+
+                    OkHttpClient client = new OkHttpClient();
+
+                    Request request = new Request.Builder()
+                            .url(url_recupero_lista_biblioteche)
+                            .get()
+                            .build();
+
+                    call = client.newCall(request);
+
+                    call.enqueue(new Callback() {
+                        @Override
+                        public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                            e.printStackTrace();
+                            iHomePrenotazionePresenter.getListaBibliotecheError();
+                        }
+
+                        @Override
+                        public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                            if(response.isSuccessful()){
+
+                                String risposta = response.body().string();
+
+                                String TAG1 = "RISPOSTA SERVIZIO GET LISTA BIBLIOTECHE";
+                                Log.i(TAG1,risposta);
+
+                                iHomePrenotazionePresenter.setListaBibliotecheDisponibili(risposta);
+
+                            }
+                            else{
+                                iHomePrenotazionePresenter.getListaBibliotecheError();
+                                String TAG1 = "RISPOSTA SERVIZIO GET LISTA BIBLIOTECHE";
+                                Log.i(TAG1,"Non e stato possibile ottenere la lista");
+                            }
+                        }
+                    });
+
+                }
+                else{
+                    String TAG1 = "RISPOSTA BROKER";
+                    Log.i(TAG1,"Non e stato possibile effetuare la richiesta");
+                    iHomePrenotazionePresenter.getListaBibliotecheError();
+                }
+            }
+        });
+
+    }
+
+    public void checkLibrary(String URL_BROKER, String nomeBiblioteca, String CHECK_NOME_BIBLIOTECA){
+
+        OkHttpClient client = new OkHttpClient();
+
+        RequestBody bibliotecaRequest = new FormBody.Builder()
+                .add("nomeBiblioteca", nomeBiblioteca)
+                .build();
+
+        Request request = new Request.Builder()
+                .url(URL_BROKER+"/"+CHECK_NOME_BIBLIOTECA)
+                .post(bibliotecaRequest)
+                .build();
+
+        Call call = client.newCall(request);
+
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                e.printStackTrace();
+                iqrCodePresenter.checkNomeBibliotecaError();
+            }
+
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                if(response.isSuccessful()){
+
+                    String url_check_nomeBiblioteca = response.body().string();
+
+                    String TAG1 = "RISPOSTA BROKER";
+                    Log.i(TAG1,url_check_nomeBiblioteca);
+
+                    OkHttpClient client = new OkHttpClient();
+
+                    Request request = new Request.Builder()
+                            .url(url_check_nomeBiblioteca)
+                            .get()
+                            .build();
+
+                    call = client.newCall(request);
+
+                    call.enqueue(new Callback() {
+                        @Override
+                        public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                            e.printStackTrace();
+                            iqrCodePresenter.checkNomeBibliotecaError();
+                        }
+
+                        @Override
+                        public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                            if(response.isSuccessful()){
+
+                                String risposta = response.body().string();
+
+                                String TAG1 = "RISPOSTA SERVIZIO CHECK NOME BIBLIOTECA";
+                                Log.i(TAG1,risposta);
+
+                                iqrCodePresenter.setNomeBiblioteca(risposta);
+
+                            }
+                            else{
+                                String TAG1 = "RISPOSTA SERVIZIO CHECK NOME BIBLIOTECA";
+                                Log.i(TAG1,"Errore nel check della biblioteca");
+                                iqrCodePresenter.checkNomeBibliotecaError();
+                            }
+                        }
+                    });
+                }
+                else{
+                    String TAG1 = "RISPOSTA BROKER";
+                    Log.i(TAG1,"Non e stato possibile effetuare la richiesta");
+                    iqrCodePresenter.checkNomeBibliotecaError();
+                }
+            }
+        });
+
+    }
+
+    void prenotazione(String URL_BROKER, String nomeStudente, String cognomeStudente, String emailStudente, String nomeBiblioteca,
+                      String oraInizio, String oraFine, String dataPren, String PRENOTAZIONE){
 
         OkHttpClient client = new OkHttpClient();
 
@@ -54,221 +210,86 @@ public class ServizioPrenotazioneAPI {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
                 e.printStackTrace();
-                iPrenotazionePresenter.prenotazioneFallita();
+                iPrenotazionePresenter.showReservationError();
             }
 
             @Override
             public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-                if (response.isSuccessful()){
-                    String url_servizio_prenotazione = response.body().string();
+                if(response.isSuccessful()){
 
-                    String TAG = "RISPOSTA BROKER";
-                    Log.i(TAG, url_servizio_prenotazione);
+                    String url_prenotazione = response.body().string();
 
-                    RequestBody formBody = new FormBody.Builder()
-                            .add("nome", nome)
-                            .add("cognome", cognome)
-                            .add("email", email)
-                            .add("idBiblioteca", idBiblioteca)
-                            .add("oraInizio", oraInizio.toString())
-                            .add("oraFine", oraFine.toString())
-                            .build();
+                    String TAG1 = "RISPOSTA BROKER";
+                    Log.i(TAG1,url_prenotazione);
+
+                    OkHttpClient client = new OkHttpClient();
+
+                    JSONObject prenotazioneDati = new JSONObject();
+                    try{
+
+                        prenotazioneDati.put("firstName", nomeStudente);
+                        prenotazioneDati.put("lastName", cognomeStudente);
+                        prenotazioneDati.put("reserverEmail", emailStudente);
+                        prenotazioneDati.put("libraryName", nomeBiblioteca);
+                        prenotazioneDati.put("oraInizio", oraInizio);
+                        prenotazioneDati.put("oraFine", oraFine);
+                        prenotazioneDati.put("dataPren", dataPren);
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                    MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+                    RequestBody body = RequestBody.create(JSON, prenotazioneDati.toString());
 
                     Request request = new Request.Builder()
-                            .url(url_servizio_prenotazione)
-                            .post(formBody)
+                            .url(url_prenotazione)
+                            .post(body)
                             .build();
 
                     call = client.newCall(request);
 
-                    call.enqueue(
-                            new Callback() {
-                                @Override
-                                public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                                    e.printStackTrace();
-                                    iPrenotazionePresenter.prenotazioneFallita();
-                                }
+                    call.enqueue(new Callback() {
+                        @Override
+                        public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                            e.printStackTrace();
+                            iPrenotazionePresenter.showReservationError();
+                        }
 
-                                @Override
-                                public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-                                    if (response.isSuccessful()){
-                                        String TAG = "SERVIZIO PRENOTAZIONE";
-                                        Log.i(TAG, "Prenotazione effettuata");
+                        @Override
+                        public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                            if(response.isSuccessful()){
 
-                                        iPrenotazionePresenter.prenotazioneEseguitaConSuccesso();
-                                    }
-                                    else{
-                                        iPrenotazionePresenter.prenotazioneFallita();
-                                        String TAG = "SERVIZIO PRENOTAZIONE";
-                                        Log.i(TAG, "Prenotazione fallita");
-                                    }
+                                String id = response.body().string();
 
-                                }
+                                String TAG1 = "RISPOSTA SERVIZIO PRENOTAZIONE";
+                                Log.i(TAG1,id);
+
+                                iPrenotazionePresenter.aggiungiPrenotazione(id, nomeBiblioteca, oraInizio, oraFine, dataPren);
+
+
                             }
-                    );
+                            else{
+                                String TAG1 = "RISPOSTA SERVIZIO PRENOTAZIONE";
+                                Log.i(TAG1,"Non e stato possibile effetuare la prenotazione");
+                                iPrenotazionePresenter.showReservationError();
+                            }
+
+                        }
+                    });
+
+
                 }
                 else{
-                    //iPrenotazionePresenter.prenotazioneFallita();
-                    String TAG = "SERVIZIO PRENOTAZIONE";
-                    Log.i(TAG, "Prenotazione fallita");
-                }
-            }
-        });
-    }
-
-
-    public void getBiblioteche(String URL_BROKER, String LISTABIBLIOTECHE){
-        OkHttpClient client = new OkHttpClient();
-
-        Request request = new Request.Builder()
-                .url(URL_BROKER+"/"+LISTABIBLIOTECHE)
-                .get()
-                .build();
-
-        Call call = client.newCall(request);
-
-        call.enqueue(new Callback() {
-            @Override
-            public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                e.printStackTrace();
-                //iHomePrenotazionePresenter.getBibliotecheFallita();
-            }
-
-            @Override
-            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-                if (response.isSuccessful()){
-                    String url_servizio_getbiblioteche = response.body().string();
-
-                    String TAG = "RISPOSTA BROKER";
-                    Log.i(TAG, url_servizio_getbiblioteche);
-
-                    Request request = new Request.Builder()
-                            .url(url_servizio_getbiblioteche)
-                            .get()
-                            .build();
-
-                    call = client.newCall(request);
-
-                    call.enqueue(
-                            new Callback() {
-                                @Override
-                                public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                                    e.printStackTrace();
-                                    //iHomePrenotazionePresenter.getBibliotecheFallita();
-                                }
-
-                                @Override
-                                public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-                                    if (response.isSuccessful()){
-                                        String TAG = "SERVIZIO BIBLIOTECHE";
-                                        Log.i(TAG, "Biblioteche recuperate");
-
-                                        try {
-
-                                            JSONArray biblioteche = new JSONArray(response.body().string());
-                                            iHomePrenotazionePresenter.setBiblioteche(biblioteche);
-
-                                        } catch (JSONException e) {
-                                            e.printStackTrace();
-                                        }
-
-                                    }
-                                    else{
-                                        //iHomePrenotazionePresenter.getbibliotecheFallita();
-                                        String TAG = "SERVIZIO BIBLIOTECHE";
-                                        Log.i(TAG, "Impossibile recuperare le biblioteche");
-                                    }
-
-                                }
-                            }
-                    );
-                }
-                else{
-                    //iHomePrenotazionePresenter.getBibliotecheFallita();
-                    String TAG = "SERVIZIO BIBLIOTECHE";
-                    Log.i(TAG, "Impossibile recuperare le biblioteche");
+                    String TAG1 = "RISPOSTA BROKER";
+                    Log.i(TAG1,"Non e stato possibile effetuare la richiesta");
+                    iPrenotazionePresenter.showReservationError();
                 }
             }
         });
 
-
-    }
-/*
-    public void getStato(String URL_BROKER, String STATO){ //va aggiunto idBiblioteca
-        OkHttpClient client = new OkHttpClient();
-
-        Request request = new Request.Builder()
-                .url(URL_BROKER+"/"+STATO)
-                .get() //post idBiblioteca
-                .build();
-
-        Call call = client.newCall(request);
-
-        call.enqueue(new Callback() {
-            @Override
-            public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                e.printStackTrace();
-                //iPrenotazionePresenter.getStatoFallita();
-            }
-
-            @Override
-            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-                if (response.isSuccessful()){
-                    String url_servizio_getstato = response.body().string();
-
-                    String TAG = "RISPOSTA BROKER";
-                    Log.i(TAG, url_servizio_getstato);
-
-                    Request request = new Request.Builder()
-                            .url(url_servizio_getstato)
-                            .get()
-                            .build();
-
-                    call = client.newCall(request);
-
-                    call.enqueue(
-                            new Callback() {
-                                @Override
-                                public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                                    e.printStackTrace();
-                                    //iPrenotazionePresenter.getStatoFallita();
-                                }
-
-                                @Override
-                                public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-                                    if (response.isSuccessful()){
-                                        String TAG = "SERVIZIO STATO";
-                                        Log.i(TAG, "Stato recuperato");
-
-                                        try {
-
-                                            JSONArray stato = new JSONArray(response.body().string());
-                                            iPrenotazionePresenter.setStato(stato);
-
-                                        } catch (JSONException e) {
-                                            e.printStackTrace();
-                                        }
-
-                                    }
-                                    else{
-                                        //iPrenotazionePresenter.getStatoFallita();
-                                        String TAG = "SERVIZIO STATO";
-                                        Log.i(TAG, "Impossibile recuperare lo stato");
-                                    }
-
-                                }
-                            }
-                    );
-                }
-                else{
-                    //iPrenotazionePresenter.getStatoFallita();
-                    String TAG = "SERVIZIO STATO";
-                    Log.i(TAG, "Impossibile recuperare lo stato");
-                }
-            }
-        });
     }
 
 
- */
-}
+    }
+

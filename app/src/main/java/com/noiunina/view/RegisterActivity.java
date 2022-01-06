@@ -11,12 +11,9 @@ import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-
 import com.noiunina.R;
 
 import com.noiunina.presenter.RegisterPresenter;
-
-
 
 public class RegisterActivity extends AppCompatActivity implements IRegisterView{
 

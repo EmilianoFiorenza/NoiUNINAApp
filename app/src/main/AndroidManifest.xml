@@ -3,16 +3,32 @@
     package="com.noiunina">
 
     <uses-permission android:name="android.permission.CAMERA" />
+
+    <uses-feature android:name="android.hardware.camera" />
+
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
+        android:hardwareAccelerated="false"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.NoiUNINA"
         android:usesCleartextTraffic="true">
+        <activity
+            android:name=".view.DatiPrenotazioneActivity"
+            android:exported="false" />
+        <activity
+            android:name=".view.ListaPrenotazioniActivity"
+            android:exported="false" />
+        <activity
+            android:name=".view.ListaBibliotecheActivity"
+            android:exported="false" />
+        <activity
+            android:name=".view.PrenotazioneActivity"
+            android:exported="false" />
         <activity
             android:name=".view.TraduzioneActivity"
             android:exported="false" />
@@ -32,7 +48,7 @@
             android:name=".view.QRCodeActivity"
             android:exported="false" />
         <activity
-            android:name=".view.SelezionaTipoPrenotazioneActivity"
+            android:name=".view.HomePrenotazioneActivity"
             android:exported="false" />
         <activity
             android:name=".view.HomeActivity"

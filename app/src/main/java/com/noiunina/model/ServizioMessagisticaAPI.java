@@ -1,7 +1,6 @@
 package com.noiunina.model;
 
 import android.util.Log;
-
 import androidx.annotation.NonNull;
 
 import com.noiunina.presenter.ChatCorsiPresenter;
@@ -429,7 +428,6 @@ public class ServizioMessagisticaAPI {
                     }
                 });
     }
-
 
     public void invioMessaggio(String testo, String mittente, String uid){
 

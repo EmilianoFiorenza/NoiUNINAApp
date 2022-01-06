@@ -3,10 +3,8 @@ package com.noiunina.presenter;
 import com.noiunina.model.GestoreRichieste;
 import com.noiunina.view.IHomeChatView;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.Iterator;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 public class HomeChatPresenter implements IHomeChatPresenter{
 
@@ -29,7 +27,6 @@ public class HomeChatPresenter implements IHomeChatPresenter{
 
     }
 
-
     @Override
     public void erroreRestituzioneListaCorsi() {
 
@@ -39,8 +36,17 @@ public class HomeChatPresenter implements IHomeChatPresenter{
     @Override
     public void getSubscriptionActivity(String listaCorsi) {
 
+        ArrayList<String> listaEsami;
+
         GestoreRichieste sys = GestoreRichieste.getInstance();
-        sys.setListaSottoscrizioniDisponibili(listaCorsi);
+
+        listaCorsi = listaCorsi.replace("\"", "");
+        listaCorsi = listaCorsi.replace("[","");
+        listaCorsi = listaCorsi.replace("]","");
+
+        listaEsami = new ArrayList<>(Arrays.asList(listaCorsi.split(",")));
+
+        sys.setListaSottoscrizioniDisponibili(listaEsami);
 
         iHomeChatView.getSubscriptionActivitySuccess();
     }

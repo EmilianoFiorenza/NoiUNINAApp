@@ -5,7 +5,6 @@ import com.noiunina.view.IHomeView;
 
 public class HomePresenter {
 
-
     public static IHomeView iHomeView;
 
     public HomePresenter(IHomeView view){
@@ -27,10 +26,5 @@ public class HomePresenter {
         iHomeView.mostraCredenziali(nomeStudente, cognomeStudente);
 
     }
-
-
-
-
-
 
 }

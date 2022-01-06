@@ -2,9 +2,10 @@ package com.noiunina.presenter;
 
 public interface ILoginPresenter {
 
-    void loginEseguitoConSuccesso(String uuid, String nome, String cognome, String corso, String email);
-    void noSottoscrizioni();
-    void siSottoscrizioni(String sottoscrizioni);
+    void memorizzaDatiStudente(String uuid, String risposta);
+    void checkSottoscrizioni(String risposta);
+    void prenotazioniTrovate(String risposta);
+    void prenotazioniNonTrovate();
     void loginFallito();
 
 }

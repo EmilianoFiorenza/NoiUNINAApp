@@ -1,29 +1,26 @@
 package com.noiunina.model;
 
-import android.util.Log;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Iterator;
-import java.util.List;
 
 public class GestoreRichieste {
 
     private static GestoreRichieste instance = null;
     public Studente studente;
     public CredenzialiChat credenzialiChat;
+    public Prenotazione prenotazione;
     public Messaggio mex;
-    public static String URL_BROKER = "http://192.168.1.216:8080/api/v1/provaBroker";
+    public static String URL_BROKER = "http://192.168.1.216:8081/api/v1/provaBroker";
     public String currentChat;
     public ArrayList<String> listaEsami;
-    public ArrayList<String> listaBiblioteche;
-    public ArrayList<String> listaStato;
+    public ArrayList<String> listaBibliotecheDisponibili;
     public ArrayList<Messaggio> conversazione;
+    public String nomeBibliotecaDaPrenotare;
 
     public static GestoreRichieste getInstance() {
 
@@ -50,13 +47,7 @@ public class GestoreRichieste {
 
     public void inizilizzaConversazione(){
 
-        this.conversazione = new ArrayList<Messaggio>();
-
-    }
-
-    public int getSizeMsg(){
-
-        return this.conversazione.size();
+        this.conversazione = new ArrayList<>();
 
     }
 
@@ -111,7 +102,39 @@ public class GestoreRichieste {
         return studente.getCognome();
     }
 
-    public String getUidStudente(){ return studente.getUuid();}
+    public String getEmailStudente() {
+        return studente.getEmail();
+    }
+
+    public String getIdPrenotazione() {
+        return this.prenotazione.getId();
+    }
+
+    public String getNomeBibliotecaPrenotata() {
+        return this.prenotazione.getNomeBiblioteca();
+    }
+
+    public String getOraInizio() {
+
+        return this.prenotazione.getOraInizio();
+    }
+
+    public String getOraFine(){
+
+        return this.prenotazione.getOraFine();
+
+    }
+
+    public String getDataPren(){
+
+        return this.prenotazione.getDataPrenotazione();
+
+    }
+
+
+    public String getUidStudente(){
+        return studente.getUuid();
+    }
 
     public void setStudente(String uuid, String nome, String cognome, String corso, String email){
         this.studente.uuid = uuid;
@@ -148,65 +171,6 @@ public class GestoreRichieste {
 
     }
 
-    public void richiestaPrenotazione(String idBiblioteca, Timestamp oraInizio, Timestamp oraFine){
-        ServizioPrenotazioneAPI servizioPrenotazioneAPI = ServizioPrenotazioneAPI.getInstance();
-
-        String PRENOTAZIONE = "prenotazione";
-
-        servizioPrenotazioneAPI.prenotazione(this.studente.uuid, this.studente.nome, this.studente.cognome, this.studente.email, idBiblioteca, oraInizio, oraFine, URL_BROKER, PRENOTAZIONE);
-    }
-
-    public void richiestaBiblioteche(){
-        ServizioPrenotazioneAPI servizioPrenotazioneAPI = ServizioPrenotazioneAPI.getInstance();
-
-        String BIBLIOTECHE = "biblioteche";
-
-        servizioPrenotazioneAPI.getBiblioteche(URL_BROKER, BIBLIOTECHE);
-    }
-
-    public void setListaBiblioteche(JSONArray biblioteche){
-        String biblio = biblioteche.toString();
-
-        biblio = biblio.replace("\"", "");
-        biblio = biblio.replace("[","");
-        biblio = biblio.replace("]","");
-
-        listaBiblioteche = new ArrayList<>(Arrays.asList(biblio.split(",")));
-
-    }
-
-    public ArrayList<String> getListaBiblioteche(){
-
-        return listaBiblioteche;
-    }
-
-/*
-    public void richiestaStato(){
-        ServizioPrenotazioneAPI servizioPrenotazioneAPI = ServizioPrenotazioneAPI.getInstance();
-
-        String STATO = "stato";
-
-        servizioPrenotazioneAPI.getStato(URL_BROKER, STATO);
-    }
-
-
-    public void setListaStato(JSONArray stato) {
-        String stat = stato.toString();
-
-        stat = stat.replace("\"", "");
-        stat = stat.replace("[","");
-        stat = stat.replace("]","");
-
-        listaStato = new ArrayList<>(Arrays.asList(stat.split(",")));
-    }
-
-    public ArrayList<String> getListaStato() {
-
-        return listaStato;
-    }
-
-*/
-
     public void getSottoscrizioniChat(){
 
         ServizioMessagisticaAPI servizioMessagisticaAPI = ServizioMessagisticaAPI.getInstance();
@@ -218,15 +182,21 @@ public class GestoreRichieste {
 
     }
 
-    public void inizializzazioneArrayListStudenteVuota(){
+    public void inizializzazioneArrayListSottoscrizioniStudenteVuota(){
 
-        this.studente.credenzialiChats = new ArrayList<CredenzialiChat>();
+        this.studente.credenzialiChats = new ArrayList<>();
 
     }
 
-    public void inizializzazioneArrayListStudente(String sottoscrizioni){
+    public void inizializzazioneArrayListPrenotazioniStudenteVuota(){
 
-        inizializzazioneArrayListStudenteVuota();
+        this.studente.prenotazioni = new ArrayList<>();
+
+    }
+
+    public void inizializzazioneArrayListSottoscrizioniStudente(String sottoscrizioni){
+
+        inizializzazioneArrayListSottoscrizioniStudenteVuota();
 
         try {
             JSONObject jsonObject = new JSONObject(sottoscrizioni.trim());
@@ -246,13 +216,33 @@ public class GestoreRichieste {
 
     }
 
-    public void setListaSottoscrizioniDisponibili(String esami){
+    public void inizializzazioneArrayListPrenotazioniStudente(String risposta){
 
-        esami = esami.replace("\"", "");
-        esami = esami.replace("[","");
-        esami = esami.replace("]","");
+        inizializzazioneArrayListPrenotazioniStudenteVuota();
 
-        listaEsami = new ArrayList<>(Arrays.asList(esami.split(",")));
+        ArrayList<String> listaPrenotazioni = new ArrayList<>();
+
+        JSONArray jsonarray;
+        try {
+            jsonarray = new JSONArray(risposta);
+            for (int i = 0; i < jsonarray.length(); i++) {
+                JSONObject jsonobject = jsonarray.getJSONObject(i);
+                String id = jsonobject.getString("id");
+                String nomeBiblioteca = jsonobject.getString("libraryName");
+                String oraInizio = jsonobject.getString("oraInizio");
+                String oraFine = jsonobject.getString("oraFine");
+                String dataPren = jsonobject.getString("dataPren");
+                addPrenotazione(id,nomeBiblioteca,oraInizio,oraFine,dataPren);
+            }
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void setListaSottoscrizioniDisponibili(ArrayList<String> listaEsami){
+
+        this.listaEsami = listaEsami;
 
     }
 
@@ -288,7 +278,6 @@ public class GestoreRichieste {
         ServizioAutenticazioneAPI servizioAutenticazioneAPI = ServizioAutenticazioneAPI.getInstance();
 
         servizioAutenticazioneAPI.checkSottoscrizioni(URL_BROKER, uuid, checkSottoscrizioni);
-
 
     }
 
@@ -359,7 +348,6 @@ public class GestoreRichieste {
 
     }
 
-
     public void effettuaTraduzione(String testo){
 
         ServizioTraduzioneAPI servizioTraduzioneAPI = ServizioTraduzioneAPI.getInstance();
@@ -368,7 +356,153 @@ public class GestoreRichieste {
 
         servizioTraduzioneAPI.traduzioneTesto(URL_BROKER, testo, traduzioneTesto);
 
+    }
+
+    public void setNomeBiblioteca(String nomeBiblioteca){
+
+        this.nomeBibliotecaDaPrenotare = nomeBiblioteca;
 
     }
 
+    public String getNomeBiblioteca(){
+
+        return this.nomeBibliotecaDaPrenotare;
+
+    }
+
+    public void prendiListaBibliotecheDisponibili(){
+
+        ServizioPrenotazioneAPI servizioPrenotazioneAPI = ServizioPrenotazioneAPI.getInstance();
+        String LISTA_BIBLIOTECHE_DISPONIBILI = "listaBibliotecheDisponibili";
+
+        servizioPrenotazioneAPI.recuperaListaBibliotecheDisponibili(URL_BROKER, LISTA_BIBLIOTECHE_DISPONIBILI);
+
+    }
+
+    public void setListaBibliotecheDisponibili(ArrayList<String> listaBibliotecheDisponibili){
+
+        this.listaBibliotecheDisponibili = listaBibliotecheDisponibili;
+
+    }
+
+    public ArrayList<String> getListaBibliotecheDisponibili(){
+
+        return this.listaBibliotecheDisponibili;
+    }
+
+    public void checkNomeBiblioteca(String nomeBiblioteca){
+
+        ServizioPrenotazioneAPI servizioPrenotazioneAPI = ServizioPrenotazioneAPI.getInstance();
+
+        String CHECK_NOME_BIBLIOTECA = "checkNomeBiblioteca";
+
+        servizioPrenotazioneAPI.checkLibrary(URL_BROKER, nomeBiblioteca, CHECK_NOME_BIBLIOTECA);
+
+    }
+
+    public void effettuaPrenotazione(String nomeBiblioteca, String dataPren, String oraInizio, String oraFine){
+
+        String nomeStudente = this.studente.getNome();
+        String cognomeStudente = this.studente.getCognome();
+        String emailStudente = this.studente.getEmail();
+
+        String PRENOTAZIONE = "prenotazione";
+
+        ServizioPrenotazioneAPI servizioPrenotazioneAPI = ServizioPrenotazioneAPI.getInstance();
+
+        servizioPrenotazioneAPI.prenotazione(URL_BROKER, nomeStudente, cognomeStudente, emailStudente, nomeBiblioteca,
+                oraInizio, oraFine, dataPren, PRENOTAZIONE);
+
+    }
+
+    public void addPrenotazione(String id, String nomeBiblioteca, String oraInizio, String oraFine, String dataPren){
+
+        this.prenotazione = new Prenotazione(id, nomeBiblioteca, oraInizio, oraFine, dataPren);
+        this.studente.prenotazioni.add(this.prenotazione);
+
+    }
+
+    public void checkPrenotazioni(){
+
+        String email = this.studente.getEmail();
+        ServizioAutenticazioneAPI servizioAutenticazioneAPI = ServizioAutenticazioneAPI.getInstance();
+        String CHECK_PRENOTAZIONI = "checkPrenotazioni";
+
+        servizioAutenticazioneAPI.checkPrenotazioni(URL_BROKER, email, CHECK_PRENOTAZIONI);
+
+    }
+
+    public ArrayList<String> getListaNomiBiblioteca(){
+
+        ArrayList<String> listaNomiBiblioteca = new ArrayList<>();
+
+        for(int i=0; i<this.studente.prenotazioni.size(); i++){
+            listaNomiBiblioteca.add(this.studente.prenotazioni.get(i).getNomeBiblioteca());
+        }
+
+        return listaNomiBiblioteca;
+    }
+
+    public ArrayList<String> getListaOraInizio(){
+
+        ArrayList<String> listaOraInizio = new ArrayList<>();
+
+        for(int i=0; i<this.studente.prenotazioni.size(); i++){
+            listaOraInizio.add(this.studente.prenotazioni.get(i).getOraInizio());
+        }
+
+        return listaOraInizio;
+    }
+
+    public ArrayList<String> getListaOraFine(){
+
+        ArrayList<String> listaOraFine = new ArrayList<>();
+
+        for(int i=0; i<this.studente.prenotazioni.size(); i++){
+            listaOraFine.add(this.studente.prenotazioni.get(i).getOraFine());
+        }
+
+        return listaOraFine;
+    }
+
+    public ArrayList<String> getListaDataPren(){
+
+        ArrayList<String> listaDataPren = new ArrayList<>();
+
+        for(int i=0; i<this.studente.prenotazioni.size(); i++){
+            listaDataPren.add(this.studente.prenotazioni.get(i).getDataPrenotazione());
+        }
+
+        return listaDataPren;
+    }
+
+    public ArrayList<String> getListaId(){
+
+        ArrayList<String> listaId = new ArrayList<>();
+
+        for(int i=0; i<this.studente.prenotazioni.size(); i++){
+            listaId.add(this.studente.prenotazioni.get(i).getId());
+        }
+
+        return listaId;
+
+
+    }
+
+    public void setPrenotazioneDaVisualizzare(String id){
+
+        for(int i=0; i<this.studente.getPrenotazioni().size(); i++){
+            if(id.equals(this.studente.getPrenotazioni().get(i).getId())){
+
+                this.prenotazione = new Prenotazione(this.studente.getPrenotazioni().get(i).getId(),
+                       this.studente.getPrenotazioni().get(i).getNomeBiblioteca(),
+                       this.studente.getPrenotazioni().get(i).getOraInizio(),
+                       this.studente.getPrenotazioni().get(i).getOraFine(),
+                       this.studente.getPrenotazioni().get(i).getDataPrenotazione());
+
+            }
+        }
+
+
+    }
 }

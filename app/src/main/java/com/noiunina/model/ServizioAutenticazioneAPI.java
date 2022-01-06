@@ -166,14 +166,8 @@ public class ServizioAutenticazioneAPI {
                         public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
                             if (response.isSuccessful()) {
 
-                                try {
-                                    JSONObject jsonDatiUtente = new JSONObject(response.body().string());
-                                    iLoginPresenter.loginEseguitoConSuccesso(uuid, jsonDatiUtente.get("nome").toString(),jsonDatiUtente.get("cognome").toString(),
-                                            jsonDatiUtente.get("corso").toString(),jsonDatiUtente.get("email").toString());
+                                iLoginPresenter.memorizzaDatiStudente(uuid, response.body().string());
 
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                                }
                             }
                             else{
                                 iLoginPresenter.loginFallito();
@@ -245,12 +239,7 @@ public class ServizioAutenticazioneAPI {
                                 String TAG1 = "RISPOSTA CHECK";
                                 Log.i(TAG1,risposta);
 
-                                if(risposta.equals("null")){
-                                    iLoginPresenter.noSottoscrizioni();
-                                }
-                                else{
-                                    iLoginPresenter.siSottoscrizioni(risposta);
-                                }
+                                iLoginPresenter.checkSottoscrizioni(risposta);
 
                             }
                             else{
@@ -268,6 +257,100 @@ public class ServizioAutenticazioneAPI {
                 }
             }
         });
+    }
+
+    public void checkPrenotazioni(String URL_BROKER, String email, String CHECK_PRENOTAZIONI){
+
+        OkHttpClient client = new OkHttpClient();
+
+        RequestBody checkPrenotazioniRequest = new FormBody.Builder()
+                .add("email", email)
+                .build();
+
+        Request request = new Request.Builder()
+                .url(URL_BROKER+"/"+CHECK_PRENOTAZIONI)
+                .post(checkPrenotazioniRequest)
+                .build();
+
+        Call call = client.newCall(request);
+
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                e.printStackTrace();
+                iLoginPresenter.loginFallito();
+
+            }
+
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                if(response.isSuccessful()){
+
+                    String url_check_prenotazioni = response.body().string();
+
+                    String TAG1 = "RISPOSTA BROKER";
+                    Log.i(TAG1,url_check_prenotazioni);
+
+                    OkHttpClient client = new OkHttpClient();
+
+                    Request request = new Request.Builder()
+                            .url(url_check_prenotazioni)
+                            .get()
+                            .build();
+
+                    call = client.newCall(request);
+
+                    call.enqueue(new Callback() {
+                        @Override
+                        public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                            e.printStackTrace();
+                            iLoginPresenter.loginFallito();
+
+                        }
+
+                        @Override
+                        public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                            if(response.isSuccessful()){
+
+                                String risposta = response.body().string();
+
+                                String TAG1 = "RISPOSTA SERVIZIO CHECK PRENOTAZIONI";
+                                Log.i(TAG1,risposta);
+
+                                iLoginPresenter.prenotazioniTrovate(risposta);
+
+                            }
+                            else{
+                                String risposta = response.body().string();
+
+                                if(risposta.equals("No reservation exists for this email")){
+
+                                    String TAG1 = "RISPOSTA SERVIZIO CHECK PRENOTAZIONI";
+                                    Log.i(TAG1, risposta);
+
+                                    iLoginPresenter.prenotazioniNonTrovate();
+
+                                }
+                                else {
+                                    String TAG1 = "RISPOSTA SERVIZIO CHECK PRENOTAZIONI";
+                                    Log.i(TAG1, "Non e stato possibile effetuare il check delle prenotazioni");
+                                    iLoginPresenter.loginFallito();
+                                }
+                            }
+
+                        }
+                    });
+
+                }
+                else{
+                    String TAG1 = "RISPOSTA BROKER";
+                    Log.i(TAG1,"Non e stato possibile effetuare la richiesta");
+                    iLoginPresenter.loginFallito();
+                }
+
+            }
+        });
+
     }
 
     public void registrazione(Studente studente, String pwd, String URL_BROKER, String SIGNUP){

@@ -2,7 +2,6 @@ package com.noiunina.view;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -32,6 +31,7 @@ public class SubscriptionActivity extends AppCompatActivity implements ISubscrip
         listView = findViewById(R.id.lista_sottoscrizioni);
         presenter = new SubscriptionPresenter(this);
         listaEsami = presenter.getListaEsami();
+
 
         arrayAdapter = new ArrayAdapter(this, R.layout.lista_layout, listaEsami);
 

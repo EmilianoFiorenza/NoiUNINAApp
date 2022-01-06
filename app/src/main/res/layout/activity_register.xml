@@ -116,7 +116,7 @@
                 android:layout_centerHorizontal="true"
                 android:background="#359BEC"
                 android:entries="@array/lista_corsi"
-                android:outlineSpotShadowColor="@color/black"
+                android:outlineSpotShadowColor="@color/white"
                 android:padding="5dp"
                 android:prompt="@string/corso"
                 android:spinnerMode="dialog" />

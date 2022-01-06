@@ -70,7 +70,7 @@
             android:background="#E2F6F6"
             android:hint="Messaggio"
             android:layout_marginRight="10dp">
-            <requestFocus></requestFocus>
+
         </EditText>
         <Button
             android:text="Invia"

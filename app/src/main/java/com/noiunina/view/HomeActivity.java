@@ -6,6 +6,7 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
@@ -17,6 +18,7 @@ public class HomeActivity extends AppCompatActivity implements IHomeView{
     ImageButton btnEffettuaPrenotazione;
     ImageButton btnTraduciTesto;
     ImageButton btnChat;
+    Button btnLogout;
     TextView textVNome;
     TextView textVCognome;
 
@@ -30,6 +32,7 @@ public class HomeActivity extends AppCompatActivity implements IHomeView{
         btnEffettuaPrenotazione = findViewById(R.id.buttonPrenotazione);
         btnTraduciTesto = findViewById(R.id.buttonTraduzione);
         btnChat = findViewById(R.id.buttonChat);
+        btnLogout = findViewById(R.id.buttonLogout);
 
         textVNome = findViewById(R.id.textNome);
         textVCognome = findViewById(R.id.textCognome);
@@ -48,7 +51,7 @@ public class HomeActivity extends AppCompatActivity implements IHomeView{
         btnEffettuaPrenotazione.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getApplicationContext(), SelezionaTipoPrenotazioneActivity.class));
+                startActivity(new Intent(getApplicationContext(), HomePrenotazioneActivity.class));
             }
         });
 
@@ -59,11 +62,13 @@ public class HomeActivity extends AppCompatActivity implements IHomeView{
             }
         });
 
-
+        btnLogout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getApplicationContext(), LoginActivity.class));
+            }
+        });
     }
-
-
-
 
     @SuppressLint("SetTextI18n")
     @Override
@@ -71,4 +76,5 @@ public class HomeActivity extends AppCompatActivity implements IHomeView{
         textVNome.setText("Nome: "+nomeStudente);
         textVCognome.setText("Cognome: "+cognomeStudente);
     }
+
 }

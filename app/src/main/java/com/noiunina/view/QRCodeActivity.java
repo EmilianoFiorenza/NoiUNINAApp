@@ -5,30 +5,31 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.Button;
-import android.widget.TextView;
+
+import android.widget.Toast;
 
 import com.budiyev.android.codescanner.CodeScanner;
 import com.budiyev.android.codescanner.CodeScannerView;
 import com.budiyev.android.codescanner.DecodeCallback;
 import com.google.zxing.Result;
 import com.noiunina.R;
+import com.noiunina.presenter.QRCodePresenter;
 
-public class QRCodeActivity extends AppCompatActivity{
+public class QRCodeActivity extends AppCompatActivity implements IQRCodeView{
 
-    TextView txt;
     CodeScanner codeScanner;
     CodeScannerView codeScannerView;
+    QRCodePresenter presenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_qrcode);
 
-        txt = (TextView) findViewById(R.id.text);
         codeScannerView = (CodeScannerView) findViewById(R.id.scannerView);
         codeScanner = new CodeScanner(this, codeScannerView);
+
+        presenter = new QRCodePresenter(this);
 
         codeScanner.setDecodeCallback(new DecodeCallback() {
             @Override
@@ -36,12 +37,11 @@ public class QRCodeActivity extends AppCompatActivity{
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        txt.setText(result.getText());
+                        presenter.checkNomeBiblioteca(result.getText());
                     }
                 });
             }
         });
-
     }
 
     @Override
@@ -53,5 +53,22 @@ public class QRCodeActivity extends AppCompatActivity{
     private void requestCamera() {
         codeScanner.startPreview();
     }
-    
+
+    @Override
+    public void getPrenotazioneActivity() {
+        startActivity(new Intent(getApplicationContext(), PrenotazioneActivity.class));
+    }
+
+    @Override
+    public void showErrorQRCode() {
+        QRCodeActivity.this.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast toast = Toast.makeText(getApplicationContext(),"QRCode non valido",Toast.LENGTH_SHORT);
+                toast.show();
+                QRCodeActivity.this.onResume();
+            }
+        });
+    }
+
 }
