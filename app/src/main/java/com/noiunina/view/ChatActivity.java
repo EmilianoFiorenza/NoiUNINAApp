@@ -97,7 +97,13 @@ public class ChatActivity extends AppCompatActivity implements IChatView{
 
     @Override
     public void clearEditText() {
-        editText.getText().clear();
+        ChatActivity.this.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                editText.getText().clear();
+            }
+        }
+        );
     }
 
 }

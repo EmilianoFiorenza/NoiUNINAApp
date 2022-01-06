@@ -111,7 +111,7 @@ public class PrenotazioneActivity extends AppCompatActivity implements IPrenotaz
 
     @Override
     public void showTimeErrorWithCurrentTime() {
-        Toast toast = Toast.makeText(getApplicationContext(),"Non puoi effettuare una prenotazione prima antecedente all'orario attuale",Toast.LENGTH_SHORT);
+        Toast toast = Toast.makeText(getApplicationContext(),"Non puoi effettuare una prenotazione antecedente all'orario attuale",Toast.LENGTH_SHORT);
         toast.show();
     }
 
