@@ -49,7 +49,7 @@ public class PrenotazionePresenter implements IPrenotazionePresenter{
         else if(startTime.isBefore(LocalTime.now())){
             iPrenotazioneView.showTimeErrorWithCurrentTime();
         }
-        else if(oraInizio.equals(oraFine)){
+        else if(oraInizio.equals(oraFine) && data.isEqual(LocalDate.now())){
             iPrenotazioneView.showTimeErrorEquals();
         }
         else{

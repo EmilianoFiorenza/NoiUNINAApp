@@ -43,7 +43,13 @@ public class TraduzioneActivity extends AppCompatActivity implements ITraduzione
 
     @Override
     public void setTraduzione(String traduzione) {
-        visualizzaTraduzioneTV.setText(traduzione);
+
+        TraduzioneActivity.this.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                visualizzaTraduzioneTV.setText(traduzione);
+            }
+        });
     }
 
     @Override
