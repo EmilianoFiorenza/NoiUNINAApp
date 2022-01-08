@@ -19,40 +19,51 @@
         android:usesCleartextTraffic="true">
         <activity
             android:name=".view.DatiPrenotazioneActivity"
-            android:exported="false" />
+            android:exported="false"
+            />
         <activity
             android:name=".view.ListaPrenotazioniActivity"
-            android:exported="false" />
+            android:exported="false"
+            />
         <activity
             android:name=".view.ListaBibliotecheActivity"
-            android:exported="false" />
+            android:exported="false"
+            />
         <activity
             android:name=".view.PrenotazioneActivity"
-            android:exported="false" />
+            android:exported="false"
+            />
         <activity
             android:name=".view.TraduzioneActivity"
-            android:exported="false" />
+            android:exported="false"
+            />
         <activity
             android:name=".view.ChatActivity"
-            android:exported="false" />
+            android:exported="false"
+            />
         <activity
             android:name=".view.ChatCorsiActivity"
-            android:exported="false" />
+            android:exported="false"
+            />
         <activity
             android:name=".view.SubscriptionActivity"
-            android:exported="false" />
+            android:exported="false"
+            />
         <activity
             android:name=".view.HomeChatActivity"
-            android:exported="false" />
+            android:exported="false"
+            />
         <activity
             android:name=".view.QRCodeActivity"
             android:exported="false" />
         <activity
             android:name=".view.HomePrenotazioneActivity"
-            android:exported="false" />
+            android:exported="false"
+            />
         <activity
             android:name=".view.HomeActivity"
-            android:exported="false" />
+            android:exported="false"
+            />
 
         <meta-data
             android:name="com.google.android.actions"
@@ -63,7 +74,8 @@
 
         <activity
             android:name=".view.RegisterActivity"
-            android:exported="false" />
+            android:exported="false"
+            />
         <activity
             android:name=".view.LoginActivity"
             android:exported="true">

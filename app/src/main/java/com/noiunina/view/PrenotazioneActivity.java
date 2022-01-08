@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -28,6 +29,7 @@ public class PrenotazioneActivity extends AppCompatActivity implements IPrenotaz
     DatePickerDialog datePickerDialog;
     Button btnPrenotazione;
 
+    ProgressBar progressBar;
     Spinner spinnerOraInizio;
     Spinner spinnerOraFIne;
     PrenotazionePresenter presenter;
@@ -44,6 +46,7 @@ public class PrenotazioneActivity extends AppCompatActivity implements IPrenotaz
         spinnerOraInizio = findViewById(R.id.spinnerOraInizio);
         spinnerOraFIne = findViewById(R.id.spinnerOraFine);
         btnPrenotazione = findViewById(R.id.btnPrenotazione);
+        progressBar = findViewById(R.id.progressBar);
 
         presenter = new PrenotazionePresenter(this);
         nomeBiblioteca = presenter.getNomeBiblioteca();
@@ -83,6 +86,7 @@ public class PrenotazioneActivity extends AppCompatActivity implements IPrenotaz
             @Override
             public void onClick(View v) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    findViewById(R.id.progressBar).setVisibility(View.VISIBLE);
                     presenter.effettuaPrenotazione(nomeBiblioteca, editTextData.getText().toString(),
                             spinnerOraInizio.getSelectedItem().toString(), spinnerOraFIne.getSelectedItem().toString());
                 }
@@ -93,24 +97,28 @@ public class PrenotazioneActivity extends AppCompatActivity implements IPrenotaz
 
     @Override
     public void showDataError() {
+        findViewById(R.id.progressBar).setVisibility(View.GONE);
         Toast toast = Toast.makeText(getApplicationContext(),"Inserire una data valida a partire da quella corrente",Toast.LENGTH_SHORT);
         toast.show();
     }
 
     @Override
     public void showTimeError() {
+        findViewById(R.id.progressBar).setVisibility(View.GONE);
         Toast toast = Toast.makeText(getApplicationContext(),"L'ora di fine prenotazione non può essere antecedente all'ora di inizio prenotazione",Toast.LENGTH_SHORT);
         toast.show();
     }
 
     @Override
     public void showTimeErrorEquals() {
+        findViewById(R.id.progressBar).setVisibility(View.GONE);
         Toast toast = Toast.makeText(getApplicationContext(),"L'ora di fine prenotazione non può essere la stessa dell'ora di inizio prenotazione",Toast.LENGTH_SHORT);
         toast.show();
     }
 
     @Override
     public void showTimeErrorWithCurrentTime() {
+        findViewById(R.id.progressBar).setVisibility(View.GONE);
         Toast toast = Toast.makeText(getApplicationContext(),"Non puoi effettuare una prenotazione antecedente all'orario attuale",Toast.LENGTH_SHORT);
         toast.show();
     }
@@ -120,6 +128,7 @@ public class PrenotazioneActivity extends AppCompatActivity implements IPrenotaz
         PrenotazioneActivity.this.runOnUiThread(new Runnable() {
             @Override
             public void run() {
+                findViewById(R.id.progressBar).setVisibility(View.GONE);
                 Toast toast = Toast.makeText(getApplicationContext(),"Non è stato possibile effettuare la prenotazione",Toast.LENGTH_SHORT);
                 toast.show();
             }
@@ -131,6 +140,7 @@ public class PrenotazioneActivity extends AppCompatActivity implements IPrenotaz
         PrenotazioneActivity.this.runOnUiThread(new Runnable() {
             @Override
             public void run() {
+                findViewById(R.id.progressBar).setVisibility(View.GONE);
                 Toast toast = Toast.makeText(getApplicationContext(),"Prenotazione effettuata con successo",Toast.LENGTH_SHORT);
                 toast.show();
             }

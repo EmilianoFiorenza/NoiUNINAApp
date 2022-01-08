@@ -353,7 +353,7 @@ public class ServizioAutenticazioneAPI {
 
     }
 
-    public void registrazione(Studente studente, String pwd, String URL_BROKER, String SIGNUP){
+    public void registrazione(String nome, String cognome, String corso, String email, String pwd, String URL_BROKER, String SIGNUP){
 
         OkHttpClient client = new OkHttpClient();
 
@@ -380,7 +380,7 @@ public class ServizioAutenticazioneAPI {
                             Log.i(TAG1, url_servizio_reg);
 
                             RequestBody formBody = new FormBody.Builder()
-                                    .add("email", studente.getEmail())
+                                    .add("email", email)
                                     .add("password", pwd)
                                     .build();
 
@@ -415,7 +415,7 @@ public class ServizioAutenticazioneAPI {
                                                     Object jsonuuid = jsonDataUser.get("localId");
                                                     String uuid = jsonuuid.toString();
                                                     Log.i(TAG1,"UUID ottenuto: "+ uuid);
-                                                    setDatiUtente(studente, URL_BROKER, setDataUser, uuid);
+                                                    setDatiUtente(nome, cognome, corso, email, URL_BROKER, setDataUser, uuid);
                                                 } catch (JSONException e) {
                                                     e.printStackTrace();
                                                 }
@@ -439,7 +439,7 @@ public class ServizioAutenticazioneAPI {
         );
     }
 
-    public void setDatiUtente(Studente studente, String URL_BROKER, String setDataUser, String uuid){
+    public void setDatiUtente(String nome, String cognome, String corso, String email, String URL_BROKER, String setDataUser, String uuid){
 
         OkHttpClient client = new OkHttpClient();
 
@@ -471,10 +471,10 @@ public class ServizioAutenticazioneAPI {
 
                             JSONObject userField = new JSONObject();
                             try{
-                                userField.put("nome", studente.getNome());
-                                userField.put("cognome", studente.getCognome());
-                                userField.put("corso", studente.getCorso());
-                                userField.put("email", studente.getEmail());
+                                userField.put("nome", nome);
+                                userField.put("cognome", cognome);
+                                userField.put("corso", corso);
+                                userField.put("email", email);
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }

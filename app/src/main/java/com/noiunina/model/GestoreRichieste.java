@@ -1,5 +1,7 @@
 package com.noiunina.model;
 
+import android.util.Log;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -157,17 +159,17 @@ public class GestoreRichieste {
 
     public void richiestaRegistrazione(String nome, String cognome, String corso, String email, String pwd) {
 
-        studente = new Studente();
+        this.studente = new Studente();
         ServizioAutenticazioneAPI servizioAutenticazioneAPI = ServizioAutenticazioneAPI.getInstance();
 
-        studente.setNome(nome);
-        studente.setCognome(cognome);
-        studente.setCorso(corso);
-        studente.setEmail(email);
+        this.studente.setNome(nome);
+        this.studente.setCognome(cognome);
+        this.studente.setCorso(corso);
+        this.studente.setEmail(email);
 
         String SIGNUP = "registrazione";
 
-        servizioAutenticazioneAPI.registrazione(studente, pwd, URL_BROKER, SIGNUP);
+        servizioAutenticazioneAPI.registrazione(nome, cognome, corso, email, pwd, URL_BROKER, SIGNUP);
 
     }
 
@@ -502,7 +504,26 @@ public class GestoreRichieste {
 
             }
         }
+    }
 
+    public void eliminaPrenotazione(String id){
+
+        String ELIMINA_PRENOTAZIONE = "eliminaPrenotazione";
+
+        ServizioPrenotazioneAPI servizioPrenotazioneAPI = ServizioPrenotazioneAPI.getInstance();
+
+        servizioPrenotazioneAPI.eliminaPrenotazione(URL_BROKER, id, ELIMINA_PRENOTAZIONE);
 
     }
+
+    public void rimuoviPrenotazioneDaLista(String id){
+
+        for(int i = 0; i<this.studente.getPrenotazioni().size(); i++){
+            if(this.studente.getPrenotazioni().get(i).getId().equals(id)){
+                this.studente.getPrenotazioni().remove(i);
+            }
+        }
+
+    }
+
 }

@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".view.HomeActivity"
+    android:background="@color/white"
     >
 
     <ImageView
@@ -53,7 +54,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/barra_superiore"
-        android:background="@color/white"
         android:fillViewport="false">
 
         <RelativeLayout

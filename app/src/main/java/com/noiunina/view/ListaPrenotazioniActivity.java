@@ -28,6 +28,8 @@ public class ListaPrenotazioniActivity extends AppCompatActivity implements ILis
     ListView listView;
     ArrayAdapter arrayAdapter;
 
+    TextView textViewDisclaimer;
+
     ListaPrenotazioniPresenter presenter;
 
     @Override
@@ -38,13 +40,14 @@ public class ListaPrenotazioniActivity extends AppCompatActivity implements ILis
         presenter = new ListaPrenotazioniPresenter(this);
 
         listView = findViewById(R.id.lista_prenotazioniEffettuate);
+        textViewDisclaimer = findViewById(R.id.disclaimer_lista_prenotazioni);
 
         listaNomiBiblioteca = presenter.getListaNomiBiblioteca();
         listaId = presenter.getListaId();
 
         arrayAdapter = new ArrayAdapter(this, R.layout.lista_layout, listaNomiBiblioteca);
 
-        listView.setAdapter(arrayAdapter);
+        presenter.checkPrenotazioni(listaId);
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -60,4 +63,16 @@ public class ListaPrenotazioniActivity extends AppCompatActivity implements ILis
     public void goToDatiPrenotazioneActivity() {
         startActivity(new Intent(getApplicationContext(), DatiPrenotazioneActivity.class));
     }
+
+    @Override
+    public void mostraDisclaimer() {
+        textViewDisclaimer.setText("Non ci sono prenotazioni effettuate. Accedi alla lista biblioteca o scansiona un QRCode per iniziare una prenotazione.");
+    }
+
+    @Override
+    public void mostraPrenotazioni() {
+        listView.setAdapter(arrayAdapter);
+    }
+
+
 }

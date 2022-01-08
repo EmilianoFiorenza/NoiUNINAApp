@@ -4,7 +4,9 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import com.noiunina.presenter.DatiPrenotazionePresenter;
 import com.noiunina.presenter.HomePrenotazionePresenter;
+import com.noiunina.presenter.IDatiPrenotazionePresenter;
 import com.noiunina.presenter.IHomePrenotazionePresenter;
 import com.noiunina.presenter.IPrenotazionePresenter;
 import com.noiunina.presenter.IQRCodePresenter;
@@ -32,6 +34,7 @@ public class ServizioPrenotazioneAPI {
     IHomePrenotazionePresenter iHomePrenotazionePresenter = new HomePrenotazionePresenter();
     IPrenotazionePresenter iPrenotazionePresenter = new PrenotazionePresenter();
     IQRCodePresenter iqrCodePresenter = new QRCodePresenter();
+    IDatiPrenotazionePresenter iDatiPrenotazionePresenter = new DatiPrenotazionePresenter();
 
 
     public static ServizioPrenotazioneAPI getInstance() {
@@ -290,6 +293,84 @@ public class ServizioPrenotazioneAPI {
 
     }
 
+    public void eliminaPrenotazione(String URL_BROKER, String id, String ELIMINA_PRENOTAZIONE){
+
+        OkHttpClient client = new OkHttpClient();
+
+        RequestBody eliminazioneRequest = new FormBody.Builder()
+                .add("uuid", id)
+                .build();
+
+        Request request = new Request.Builder()
+                .url(URL_BROKER+"/"+ELIMINA_PRENOTAZIONE)
+                .post(eliminazioneRequest)
+                .build();
+
+        String TAG1 = "ID";
+        Log.i(TAG1,id);
+
+        Call call = client.newCall(request);
+
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                e.printStackTrace();
+                iDatiPrenotazionePresenter.elimanzionePrenotazioneFallita();
+
+            }
+
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                if(response.isSuccessful()){
+
+                    String url_servizio_eliminazione_prenotazione = response.body().string();
+
+                    String TAG1 = "RISPOSTA BROKER";
+                    Log.i(TAG1,url_servizio_eliminazione_prenotazione);
+
+                    Request request = new Request.Builder()
+                            .url(url_servizio_eliminazione_prenotazione)
+                            .delete()
+                            .build();
+
+                    call = client.newCall(request);
+
+
+                    call.enqueue(new Callback() {
+                        @Override
+                        public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                            e.printStackTrace();
+                            iDatiPrenotazionePresenter.elimanzionePrenotazioneFallita();
+                        }
+
+                        @Override
+                        public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                            if(response.isSuccessful()){
+
+                                String TAG1 = "RISPOSTA SERVIZIO ELIMINAZIONE PRENOTAZIONE";
+                                Log.i(TAG1,"Eliminazione prenotazione effettuata");
+
+                                iDatiPrenotazionePresenter.eliminazionePrenotazioneAvvenutaConSuccesso(id);
+
+                            }
+                            else{
+                                String TAG1 = "RISPOSTA SERVIZIO ELIMINAZIONE PRENOTAZIONE";
+                                Log.i(TAG1,"Non e stato possibile eliminare la prenotazione");
+                                iDatiPrenotazionePresenter.elimanzionePrenotazioneFallita();
+                            }
+                        }
+                    });
+
+                }
+                else{
+                    String TAG1 = "RISPOSTA BROKER";
+                    Log.i(TAG1,"Non e stato possibile effetuare la richiesta");
+                    iDatiPrenotazionePresenter.elimanzionePrenotazioneFallita();
+                }
+            }
+        });
+
+    }
 
     }
 

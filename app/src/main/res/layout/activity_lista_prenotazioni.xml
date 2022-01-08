@@ -5,7 +5,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".view.ListaPrenotazioniActivity">
+    tools:context=".view.ListaPrenotazioniActivity"
+    android:background="@color/white">
 
     <ImageView
         android:id="@+id/barra_superiore"
@@ -36,5 +37,15 @@
         android:scrollbarAlwaysDrawVerticalTrack="true"
         />
 
+    <TextView
+        android:id="@+id/disclaimer_lista_prenotazioni"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:textSize="20dp"
+        android:textColor="@color/black"
+        android:textAlignment="center"
+        />
 
 </RelativeLayout>

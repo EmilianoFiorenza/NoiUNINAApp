@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.noiunina.R;
@@ -22,12 +23,14 @@ public class SubscriptionActivity extends AppCompatActivity implements ISubscrip
     ArrayList<String> listaEsami;
     SubscriptionPresenter presenter;
     ArrayAdapter arrayAdapter;
+    ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_subscription);
 
+        progressBar = findViewById(R.id.progressBar);
         listView = findViewById(R.id.lista_sottoscrizioni);
         presenter = new SubscriptionPresenter(this);
         listaEsami = presenter.getListaEsami();
@@ -51,6 +54,7 @@ public class SubscriptionActivity extends AppCompatActivity implements ISubscrip
         SubscriptionActivity.this.runOnUiThread(new Runnable() {
             @Override
             public void run() {
+                findViewById(R.id.progressBar).setVisibility(View.GONE);
                 Toast toast = Toast.makeText(getApplicationContext(), "Non è stato possibile effetuare la sottoscrizione", Toast.LENGTH_SHORT);
                 toast.show();
             }
@@ -63,6 +67,7 @@ public class SubscriptionActivity extends AppCompatActivity implements ISubscrip
         SubscriptionActivity.this.runOnUiThread(new Runnable() {
             @Override
             public void run() {
+                findViewById(R.id.progressBar).setVisibility(View.GONE);
                 Toast toast = Toast.makeText(getApplicationContext(), "Sottoscrizione effettuata con successo", Toast.LENGTH_SHORT);
                 toast.show();
             }
@@ -75,6 +80,7 @@ public class SubscriptionActivity extends AppCompatActivity implements ISubscrip
         SubscriptionActivity.this.runOnUiThread(new Runnable() {
             @Override
             public void run() {
+                findViewById(R.id.progressBar).setVisibility(View.GONE);
                 Toast toast = Toast.makeText(getApplicationContext(), "Non è stato possibile eliminare la sottoscrizione", Toast.LENGTH_SHORT);
                 toast.show();
             }
@@ -87,6 +93,7 @@ public class SubscriptionActivity extends AppCompatActivity implements ISubscrip
         SubscriptionActivity.this.runOnUiThread(new Runnable() {
             @Override
             public void run() {
+                findViewById(R.id.progressBar).setVisibility(View.GONE);
                 Toast toast = Toast.makeText(getApplicationContext(), "Sottoscrizione eliminata con successo", Toast.LENGTH_SHORT);
                 toast.show();
             }
@@ -102,6 +109,7 @@ public class SubscriptionActivity extends AppCompatActivity implements ISubscrip
             public void onClick(DialogInterface dialog, int which) {
                 switch (which){
                     case DialogInterface.BUTTON_POSITIVE:
+                        findViewById(R.id.progressBar).setVisibility(View.VISIBLE);
                         presenter.eliminaSottoscrizione(esame);
                         break;
                     case DialogInterface.BUTTON_NEGATIVE:
@@ -123,6 +131,7 @@ public class SubscriptionActivity extends AppCompatActivity implements ISubscrip
             public void onClick(DialogInterface dialog, int which) {
                 switch (which){
                     case DialogInterface.BUTTON_POSITIVE:
+                        findViewById(R.id.progressBar).setVisibility(View.VISIBLE);
                         presenter.effettuaSottoscrizione(esame);
                         break;
                     case DialogInterface.BUTTON_NEGATIVE:

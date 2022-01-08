@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.noiunina.R;
@@ -15,6 +16,7 @@ public class HomeChatActivity extends AppCompatActivity implements IHomeChatView
 
     Button buttonSottoscrivi;
     Button buttonListaChat;
+    ProgressBar progressBar;
     HomeChatPresenter presenter;
 
     @Override
@@ -25,11 +27,12 @@ public class HomeChatActivity extends AppCompatActivity implements IHomeChatView
         buttonSottoscrivi = findViewById(R.id.buttonSottoscritiviChat);
         buttonListaChat = findViewById(R.id.buttonIniziaChat);
         presenter = new HomeChatPresenter(this);
-
+        progressBar = findViewById(R.id.progressBar);
 
         buttonSottoscrivi.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                findViewById(R.id.progressBar).setVisibility(View.VISIBLE);
                 presenter.getListaEsami();
             }
         });
@@ -47,6 +50,7 @@ public class HomeChatActivity extends AppCompatActivity implements IHomeChatView
         HomeChatActivity.this.runOnUiThread(new Runnable() {
             @Override
             public void run() {
+                findViewById(R.id.progressBar).setVisibility(View.GONE);
                 Toast toast = Toast.makeText(getApplicationContext(), "Non è stato possibile ottenre la lista chat da sottoscrivere", Toast.LENGTH_SHORT);
                 toast.show();
             }
@@ -56,7 +60,15 @@ public class HomeChatActivity extends AppCompatActivity implements IHomeChatView
 
     @Override
     public void getSubscriptionActivitySuccess() {
-        startActivity(new Intent(getApplicationContext(), SubscriptionActivity.class));
+        HomeChatActivity.this.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                findViewById(R.id.progressBar).setVisibility(View.GONE);
+                startActivity(new Intent(getApplicationContext(), SubscriptionActivity.class));
+            }
+        }
+        );
+
     }
 
 }

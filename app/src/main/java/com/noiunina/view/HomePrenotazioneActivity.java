@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.noiunina.R;
@@ -24,6 +25,7 @@ public class HomePrenotazioneActivity extends AppCompatActivity implements IHome
     Button btnQRCode;
     Button btnListaBiblioteche;
     Button btnVisualizzaPrenotazioni;
+    ProgressBar progressBar;
 
     HomePrenotazionePresenter presenter;
 
@@ -35,6 +37,7 @@ public class HomePrenotazioneActivity extends AppCompatActivity implements IHome
         btnQRCode = findViewById(R.id.buttonQRCode);
         btnListaBiblioteche = findViewById(R.id.buttonAccediListaBiblioteche);
         btnVisualizzaPrenotazioni = findViewById(R.id.btnVisualizzaPrenotazioniEffettuate);
+        progressBar = findViewById(R.id.progressBar);
 
         presenter = new HomePrenotazionePresenter(this);
 
@@ -48,6 +51,7 @@ public class HomePrenotazioneActivity extends AppCompatActivity implements IHome
         btnListaBiblioteche.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                findViewById(R.id.progressBar).setVisibility(View.VISIBLE);
                 presenter.getListaBiblioteche();
             }
         });
@@ -66,6 +70,7 @@ public class HomePrenotazioneActivity extends AppCompatActivity implements IHome
         HomePrenotazioneActivity.this.runOnUiThread(new Runnable() {
             @Override
             public void run() {
+                findViewById(R.id.progressBar).setVisibility(View.GONE);
                 Toast toast = Toast.makeText(getApplicationContext(), "Non è stato possibile ottenre la lista delle biblioteche", Toast.LENGTH_SHORT);
                 toast.show();
             }
@@ -74,7 +79,13 @@ public class HomePrenotazioneActivity extends AppCompatActivity implements IHome
 
     @Override
     public void goToListaBibliotecheActivity() {
-        startActivity(new Intent(getApplicationContext(), ListaBibliotecheActivity.class));
+        HomePrenotazioneActivity.this.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                findViewById(R.id.progressBar).setVisibility(View.GONE);
+                startActivity(new Intent(getApplicationContext(), ListaBibliotecheActivity.class));
+            }
+        });
     }
 
 }

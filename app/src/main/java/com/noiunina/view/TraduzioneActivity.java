@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -17,6 +18,7 @@ public class TraduzioneActivity extends AppCompatActivity implements ITraduzione
     EditText inserisciTraduzioneET;
     TextView visualizzaTraduzioneTV;
     Button  btnTraduci;
+    ProgressBar progressBar;
 
     TraduzionePresenter presenter;
 
@@ -30,10 +32,12 @@ public class TraduzioneActivity extends AppCompatActivity implements ITraduzione
         inserisciTraduzioneET = findViewById(R.id.et_inserisci_testo_da_tradurre);
         visualizzaTraduzioneTV = findViewById(R.id.tv_visualizza_traduzione);
         btnTraduci = findViewById(R.id.btn_traduci);
+        progressBar = findViewById(R.id.progressBar);
 
         btnTraduci.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                findViewById(R.id.progressBar).setVisibility(View.VISIBLE);
                 presenter.traduciTesto(inserisciTraduzioneET.getText().toString());
             }
         });
@@ -47,6 +51,7 @@ public class TraduzioneActivity extends AppCompatActivity implements ITraduzione
         TraduzioneActivity.this.runOnUiThread(new Runnable() {
             @Override
             public void run() {
+                findViewById(R.id.progressBar).setVisibility(View.GONE);
                 visualizzaTraduzioneTV.setText(traduzione);
             }
         });
@@ -57,6 +62,7 @@ public class TraduzioneActivity extends AppCompatActivity implements ITraduzione
         TraduzioneActivity.this.runOnUiThread(new Runnable() {
             @Override
             public void run() {
+                findViewById(R.id.progressBar).setVisibility(View.GONE);
                 Toast toast = Toast.makeText(getApplicationContext(),"Non è stato possibile ottenere la traduzione. Riprovare.",Toast.LENGTH_SHORT);
                 toast.show();
             }

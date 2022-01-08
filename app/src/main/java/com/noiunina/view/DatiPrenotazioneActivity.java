@@ -1,16 +1,25 @@
 package com.noiunina.view;
 
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Point;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Display;
+import android.view.View;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.zxing.WriterException;
 import com.noiunina.R;
@@ -19,7 +28,7 @@ import com.noiunina.presenter.DatiPrenotazionePresenter;
 import androidmads.library.qrgenearator.QRGContents;
 import androidmads.library.qrgenearator.QRGEncoder;
 
-public class DatiPrenotazioneActivity extends AppCompatActivity {
+public class DatiPrenotazioneActivity extends AppCompatActivity implements IDatiPrenotazioneView{
 
     TextView textViewId;
     TextView textViewStudente;
@@ -27,8 +36,10 @@ public class DatiPrenotazioneActivity extends AppCompatActivity {
     TextView textViewNomeBiblioteca;
     TextView textViewOrario;
     TextView textViewData;
+    TextView textViewDisclaimer;
 
     ImageView imageViewQRCode;
+    ProgressBar progressBar;
 
     String nomeStudente;
     String cognomeStudente;
@@ -41,9 +52,11 @@ public class DatiPrenotazioneActivity extends AppCompatActivity {
 
     Bitmap bitmap;
     QRGEncoder qrgEncoder;
+    Button btnElimina;
 
     DatiPrenotazionePresenter datiPrenotazionePresenter;
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,10 +69,14 @@ public class DatiPrenotazioneActivity extends AppCompatActivity {
         textViewNomeBiblioteca = findViewById(R.id.textView_Biblioteca);
         textViewOrario = findViewById(R.id.textView_orario);
         textViewData = findViewById(R.id.textView_data);
+        textViewDisclaimer = findViewById(R.id.textView_titlePRENOTAZIONESCADUTA);
 
         imageViewQRCode = findViewById(R.id.imageView_QRCode);
+        progressBar = findViewById(R.id.progressBar);
 
-        datiPrenotazionePresenter = new DatiPrenotazionePresenter();
+        btnElimina = findViewById(R.id.buttonEliminaPrenotazione);
+
+        datiPrenotazionePresenter = new DatiPrenotazionePresenter(this);
 
         nomeStudente = datiPrenotazionePresenter.getNomeStudente();
         cognomeStudente = datiPrenotazionePresenter.getCognomeStudente();
@@ -97,5 +114,66 @@ public class DatiPrenotazioneActivity extends AppCompatActivity {
         textViewOrario.setText("Orario: "+oraInizio+"-"+oraFine);
         textViewData.setText("Data: "+dataPren);
 
+        datiPrenotazionePresenter.checkScadenza(oraFine, dataPren);
+
+
+        btnElimina.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        switch (which){
+                            case DialogInterface.BUTTON_POSITIVE:
+                                findViewById(R.id.progressBar).setVisibility(View.VISIBLE);
+                                datiPrenotazionePresenter.eliminaPrenotazione(id);
+                                break;
+                            case DialogInterface.BUTTON_NEGATIVE:
+                                break;
+                        }
+                    }
+                };
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(DatiPrenotazioneActivity.this);
+                builder.setMessage("Vuoi annullare la tua prenotazione?").setPositiveButton("Si", dialogClickListener)
+                        .setNegativeButton("No", dialogClickListener).show();
+
+            }
+        });
+
+
+    }
+
+    @Override
+    public void eliminazioneFattila() {
+        DatiPrenotazioneActivity.this.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                findViewById(R.id.progressBar).setVisibility(View.GONE);
+                Toast toast = Toast.makeText(getApplicationContext(),"Non è stato possibile annullare la prenotazione",Toast.LENGTH_SHORT);
+                toast.show();
+            }
+        });
+    }
+
+    @Override
+    public void eliminazioneAvvenutaConSuccesso() {
+        DatiPrenotazioneActivity.this.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                findViewById(R.id.progressBar).setVisibility(View.GONE);
+                Toast toast = Toast.makeText(getApplicationContext(),"La tua prenotazione è stata annullata",Toast.LENGTH_SHORT);
+                toast.show();
+                startActivity(new Intent(getApplicationContext(), HomePrenotazioneActivity.class));
+                finish();
+            }
+        });
+    }
+
+    @SuppressLint("SetTextI18n")
+    @Override
+    public void mostraDisclaimer() {
+        textViewDisclaimer.setText("PRENOTAZIONE SCADUTA");
     }
 }
