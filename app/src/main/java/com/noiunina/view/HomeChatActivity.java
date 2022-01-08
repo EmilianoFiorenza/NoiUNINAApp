@@ -51,7 +51,7 @@ public class HomeChatActivity extends AppCompatActivity implements IHomeChatView
             @Override
             public void run() {
                 findViewById(R.id.progressBar).setVisibility(View.GONE);
-                Toast toast = Toast.makeText(getApplicationContext(), "Non è stato possibile ottenre la lista chat da sottoscrivere", Toast.LENGTH_SHORT);
+                Toast toast = Toast.makeText(getApplicationContext(), "Non è stato possibile ottenere la lista chat da sottoscrivere", Toast.LENGTH_SHORT);
                 toast.show();
             }
         }

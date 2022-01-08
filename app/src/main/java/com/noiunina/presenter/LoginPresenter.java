@@ -1,10 +1,14 @@
 package com.noiunina.presenter;
 
+import com.noiunina.model.CredenzialiChat;
 import com.noiunina.model.GestoreRichieste;
 import com.noiunina.view.ILoginView;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.Iterator;
 
 public class LoginPresenter implements ILoginPresenter{
 
@@ -61,16 +65,28 @@ public class LoginPresenter implements ILoginPresenter{
 
         GestoreRichieste sys = GestoreRichieste.getInstance();
 
-        if(risposta.equals("null")){
-            sys.inizializzazioneArrayListSottoscrizioniStudenteVuota();
-        }
-        else{
-            sys.inizializzazioneArrayListSottoscrizioniStudente(risposta);
+        sys.inizializzazioneArrayListSottoscrizioniStudenteVuota();
+
+        if(!risposta.equals("null")){
+
+            try {
+                JSONObject jsonObject = new JSONObject(risposta.trim());
+                Iterator<String> keys = jsonObject.keys();
+
+                while(keys.hasNext()) {
+                    String key = keys.next();
+
+                    sys.addCredenzialiChatStudente(key,jsonObject.get(key).toString());
+
+                }
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
         }
 
         sys.checkPrenotazioni();
-
-
 
     }
 
@@ -79,7 +95,25 @@ public class LoginPresenter implements ILoginPresenter{
 
         GestoreRichieste sys = GestoreRichieste.getInstance();
 
-        sys.inizializzazioneArrayListPrenotazioniStudente(risposta);
+        sys.inizializzazioneArrayListPrenotazioniStudenteVuota();
+
+        JSONArray jsonarray;
+        try {
+            jsonarray = new JSONArray(risposta);
+            for (int i = 0; i < jsonarray.length(); i++) {
+                JSONObject jsonobject = jsonarray.getJSONObject(i);
+                String id = jsonobject.getString("id");
+                String nomeBiblioteca = jsonobject.getString("libraryName");
+                String oraInizio = jsonobject.getString("oraInizio");
+                String oraFine = jsonobject.getString("oraFine");
+                String dataPren = jsonobject.getString("dataPren");
+                sys.addPrenotazione(id,nomeBiblioteca,oraInizio,oraFine,dataPren);
+            }
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
 
         ILoginView.getHomeActivity();
 

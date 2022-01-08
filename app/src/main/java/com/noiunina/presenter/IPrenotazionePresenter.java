@@ -9,4 +9,6 @@ public interface IPrenotazionePresenter {
 
     void showReservationError();
     void aggiungiPrenotazione(String id, String nomeBiblioteca, String oraInizio, String oraFine, String dataPren);
+    void showUserAlreadyReservedError();
+    void showMaximumOccupancyReachedError();
 }

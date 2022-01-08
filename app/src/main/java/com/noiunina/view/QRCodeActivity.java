@@ -83,6 +83,18 @@ public class QRCodeActivity extends AppCompatActivity implements IQRCodeView{
         });
     }
 
+    @Override
+    public void connectionError() {
+        QRCodeActivity.this.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast toast = Toast.makeText(getApplicationContext(),"Impossibile connettersi al servizio",Toast.LENGTH_SHORT);
+                toast.show();
+                QRCodeActivity.this.onResume();
+            }
+        });
+    }
+
 
     private boolean checkPermission() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)

@@ -51,4 +51,9 @@ public class QRCodePresenter implements IQRCodePresenter{
         iqrCodeView.getPrenotazioneActivity();
 
     }
+
+    @Override
+    public void connectionError() {
+        iqrCodeView.connectionError();
+    }
 }

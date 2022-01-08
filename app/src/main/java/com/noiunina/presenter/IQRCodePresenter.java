@@ -4,5 +4,6 @@ public interface IQRCodePresenter {
 
     void checkNomeBibliotecaError();
     void setNomeBiblioteca(String risposta);
+    void connectionError();
 
 }

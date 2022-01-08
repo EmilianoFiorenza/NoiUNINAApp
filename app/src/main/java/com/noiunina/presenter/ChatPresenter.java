@@ -79,7 +79,7 @@ public class ChatPresenter implements IChatPresenter{
         String mittente;
         String uid;
 
-        sys.inizilizzaConversazione();
+        sys.inizializzaConversazione();
 
         if (conversazione != null) {
 
@@ -95,7 +95,7 @@ public class ChatPresenter implements IChatPresenter{
                     messaggio = jsonMessaggio.get("messaggio").toString();
                     uid = jsonMessaggio.get("uid").toString();
 
-                    sys.addMessagioSuLista(mittente, messaggio, uid);
+                    sys.addMessaggioSuLista(mittente, messaggio, uid);
 
                 }
             } catch (JSONException e) {

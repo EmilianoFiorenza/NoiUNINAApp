@@ -4,4 +4,5 @@ public interface IQRCodeView {
 
     void getPrenotazioneActivity();
     void showErrorQRCode();
+    void connectionError();
 }

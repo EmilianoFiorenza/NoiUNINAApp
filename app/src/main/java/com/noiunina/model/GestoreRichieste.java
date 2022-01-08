@@ -1,14 +1,6 @@
 package com.noiunina.model;
 
-import android.util.Log;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Iterator;
 
 public class GestoreRichieste {
 
@@ -40,14 +32,14 @@ public class GestoreRichieste {
 
     }
 
-    public void addMessagioSuLista(String mittente, String messaggio, String uid){
+    public void addMessaggioSuLista(String mittente, String messaggio, String uid){
 
         this.mex = new Messaggio(mittente, messaggio, uid);
         this.conversazione.add(this.mex);
 
     }
 
-    public void inizilizzaConversazione(){
+    public void inizializzaConversazione(){
 
         this.conversazione = new ArrayList<>();
 
@@ -133,7 +125,6 @@ public class GestoreRichieste {
 
     }
 
-
     public String getUidStudente(){
         return studente.getUuid();
     }
@@ -196,52 +187,6 @@ public class GestoreRichieste {
 
     }
 
-    public void inizializzazioneArrayListSottoscrizioniStudente(String sottoscrizioni){
-
-        inizializzazioneArrayListSottoscrizioniStudenteVuota();
-
-        try {
-            JSONObject jsonObject = new JSONObject(sottoscrizioni.trim());
-            Iterator<String> keys = jsonObject.keys();
-
-            while(keys.hasNext()) {
-                String key = keys.next();
-
-                this.credenzialiChat = new CredenzialiChat(key, jsonObject.get(key).toString());
-                this.studente.credenzialiChats.add(credenzialiChat);
-
-            }
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-    }
-
-    public void inizializzazioneArrayListPrenotazioniStudente(String risposta){
-
-        inizializzazioneArrayListPrenotazioniStudenteVuota();
-
-        ArrayList<String> listaPrenotazioni = new ArrayList<>();
-
-        JSONArray jsonarray;
-        try {
-            jsonarray = new JSONArray(risposta);
-            for (int i = 0; i < jsonarray.length(); i++) {
-                JSONObject jsonobject = jsonarray.getJSONObject(i);
-                String id = jsonobject.getString("id");
-                String nomeBiblioteca = jsonobject.getString("libraryName");
-                String oraInizio = jsonobject.getString("oraInizio");
-                String oraFine = jsonobject.getString("oraFine");
-                String dataPren = jsonobject.getString("dataPren");
-                addPrenotazione(id,nomeBiblioteca,oraInizio,oraFine,dataPren);
-            }
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-    }
-
     public void setListaSottoscrizioniDisponibili(ArrayList<String> listaEsami){
 
         this.listaEsami = listaEsami;
@@ -297,6 +242,20 @@ public class GestoreRichieste {
 
     }
 
+    public ArrayList<String> getListaCodiciChatSottoscritte(){
+
+        ArrayList<String> listaCodiciChatSottoscritte = new ArrayList<>();
+
+        for(int i=0; i<this.studente.getCredenzialiChats().size(); i++){
+
+            listaCodiciChatSottoscritte.add(this.studente.getCredenzialiChats().get(i).getCodice());
+
+        }
+
+        return listaCodiciChatSottoscritte;
+
+    }
+
     public void setCurrentChat(String chat){
 
         this.currentChat = chat;
@@ -309,21 +268,7 @@ public class GestoreRichieste {
 
     }
 
-    public void getMessageList(String chat){
-
-        String codice = null;
-        int i = 0;
-        boolean trovato = false;
-
-        while(i<this.studente.credenzialiChats.size() && !trovato){
-            if(chat.equals(this.studente.getCredenzialiChats().get(i).getEsame())){
-                codice = this.studente.credenzialiChats.get(i).getCodice();
-                trovato = true;
-            }
-            else{
-                i++;
-            }
-        }
+    public void getMessageList(String codice){
 
         ServizioMessagisticaAPI servizioMessagisticaAPI = ServizioMessagisticaAPI.getInstance();
         String chatURL = "myChat";

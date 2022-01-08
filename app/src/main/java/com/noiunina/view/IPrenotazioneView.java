@@ -8,4 +8,6 @@ public interface IPrenotazioneView {
     void showTimeErrorWithCurrentTime();
     void showReservationError();
     void showReservationSuccessful();
+    void showUserAlreadyReservedError();
+    void showMaximumOccupancyReachedError();
 }

@@ -45,7 +45,26 @@ public class ChatCorsiPresenter implements IChatCorsiPresenter {
     public void getMessageList(String chat){
 
         GestoreRichieste sys = GestoreRichieste.getInstance();
-        sys.getMessageList(chat);
+
+        ArrayList<String> listaChatSottoscritte = sys.getListaChatSottoscritte();
+        ArrayList<String> listaCodiciChatSottoscritte = sys.getListaCodiciChatSottoscritte();
+
+        String codice = null;
+
+        int i = 0;
+        boolean trovato = false;
+
+        while(i<listaChatSottoscritte.size() && !trovato){
+            if(chat.equals(listaChatSottoscritte.get(i))){
+                codice = listaCodiciChatSottoscritte.get(i);
+                trovato = true;
+            }
+            else{
+                i++;
+            }
+        }
+
+        sys.getMessageList(codice);
 
     }
 
@@ -68,7 +87,7 @@ public class ChatCorsiPresenter implements IChatCorsiPresenter {
         String mittente;
         String uid;
 
-        sys.inizilizzaConversazione();
+        sys.inizializzaConversazione();
 
         if (conversazioneChat != null) {
 
@@ -87,7 +106,7 @@ public class ChatCorsiPresenter implements IChatCorsiPresenter {
                     Log.i("setConversazione", mittente);
                     Log.i("setConversazione", messaggio);
 
-                    sys.addMessagioSuLista(mittente, messaggio, uid);
+                    sys.addMessaggioSuLista(mittente, messaggio, uid);
 
                 }
             } catch (JSONException e) {

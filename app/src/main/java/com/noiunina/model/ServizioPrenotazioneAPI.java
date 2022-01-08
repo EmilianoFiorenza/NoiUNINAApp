@@ -139,7 +139,7 @@ public class ServizioPrenotazioneAPI {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
                 e.printStackTrace();
-                iqrCodePresenter.checkNomeBibliotecaError();
+                iqrCodePresenter.connectionError();
             }
 
             @Override
@@ -164,7 +164,7 @@ public class ServizioPrenotazioneAPI {
                         @Override
                         public void onFailure(@NonNull Call call, @NonNull IOException e) {
                             e.printStackTrace();
-                            iqrCodePresenter.checkNomeBibliotecaError();
+                            iqrCodePresenter.connectionError();
                         }
 
                         @Override
@@ -180,9 +180,17 @@ public class ServizioPrenotazioneAPI {
 
                             }
                             else{
-                                String TAG1 = "RISPOSTA SERVIZIO CHECK NOME BIBLIOTECA";
-                                Log.i(TAG1,"Errore nel check della biblioteca");
-                                iqrCodePresenter.checkNomeBibliotecaError();
+
+                                String risposta = response.body().string();
+
+                                if(risposta.equals("Library not found")){
+                                    iqrCodePresenter.checkNomeBibliotecaError();
+                                }
+                                else {
+                                    String TAG1 = "RISPOSTA SERVIZIO CHECK NOME BIBLIOTECA";
+                                    Log.i(TAG1, "Errore nel check della biblioteca");
+                                    iqrCodePresenter.connectionError();
+                                }
                             }
                         }
                     });
@@ -190,7 +198,7 @@ public class ServizioPrenotazioneAPI {
                 else{
                     String TAG1 = "RISPOSTA BROKER";
                     Log.i(TAG1,"Non e stato possibile effetuare la richiesta");
-                    iqrCodePresenter.checkNomeBibliotecaError();
+                    iqrCodePresenter.connectionError();
                 }
             }
         });
@@ -273,9 +281,20 @@ public class ServizioPrenotazioneAPI {
 
                             }
                             else{
-                                String TAG1 = "RISPOSTA SERVIZIO PRENOTAZIONE";
-                                Log.i(TAG1,"Non e stato possibile effetuare la prenotazione");
-                                iPrenotazionePresenter.showReservationError();
+
+                                String risposta = response.body().string();
+
+                                if(risposta.equals("Utente già prenotato.")){
+                                    iPrenotazionePresenter.showUserAlreadyReservedError();
+                                }
+                                else if(risposta.equals("Raggiunta la capienza massima per la fascia oraria selezionata.")){
+                                    iPrenotazionePresenter.showMaximumOccupancyReachedError();
+                                }
+                                else {
+                                    String TAG1 = "RISPOSTA SERVIZIO PRENOTAZIONE";
+                                    Log.i(TAG1, "Non e stato possibile effetuare la prenotazione");
+                                    iPrenotazionePresenter.showReservationError();
+                                }
                             }
 
                         }

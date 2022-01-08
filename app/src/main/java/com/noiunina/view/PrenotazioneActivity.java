@@ -129,7 +129,7 @@ public class PrenotazioneActivity extends AppCompatActivity implements IPrenotaz
             @Override
             public void run() {
                 findViewById(R.id.progressBar).setVisibility(View.GONE);
-                Toast toast = Toast.makeText(getApplicationContext(),"Non è stato possibile effettuare la prenotazione",Toast.LENGTH_SHORT);
+                Toast toast = Toast.makeText(getApplicationContext(),"Impossibile connettersi al servizio.",Toast.LENGTH_SHORT);
                 toast.show();
             }
         });
@@ -142,6 +142,30 @@ public class PrenotazioneActivity extends AppCompatActivity implements IPrenotaz
             public void run() {
                 findViewById(R.id.progressBar).setVisibility(View.GONE);
                 Toast toast = Toast.makeText(getApplicationContext(),"Prenotazione effettuata con successo",Toast.LENGTH_SHORT);
+                toast.show();
+            }
+        });
+    }
+
+    @Override
+    public void showUserAlreadyReservedError() {
+        PrenotazioneActivity.this.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                findViewById(R.id.progressBar).setVisibility(View.GONE);
+                Toast toast = Toast.makeText(getApplicationContext(),"Utente già prenotato per questa fascia oraria",Toast.LENGTH_SHORT);
+                toast.show();
+            }
+        });
+    }
+
+    @Override
+    public void showMaximumOccupancyReachedError() {
+        PrenotazioneActivity.this.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                findViewById(R.id.progressBar).setVisibility(View.GONE);
+                Toast toast = Toast.makeText(getApplicationContext(),"Non ci sono posti disponibili per questa fascia oraria",Toast.LENGTH_SHORT);
                 toast.show();
             }
         });

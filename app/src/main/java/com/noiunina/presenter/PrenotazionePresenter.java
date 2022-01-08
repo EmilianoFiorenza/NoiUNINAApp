@@ -78,4 +78,14 @@ public class PrenotazionePresenter implements IPrenotazionePresenter{
 
         iPrenotazioneView.showReservationSuccessful();
     }
+
+    @Override
+    public void showUserAlreadyReservedError() {
+        iPrenotazioneView.showUserAlreadyReservedError();
+    }
+
+    @Override
+    public void showMaximumOccupancyReachedError() {
+        iPrenotazioneView.showMaximumOccupancyReachedError();
+    }
 }
