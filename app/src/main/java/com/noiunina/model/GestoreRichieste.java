@@ -166,12 +166,12 @@ public class GestoreRichieste {
 
     public void getSottoscrizioniChat(){
 
-        ServizioMessagisticaAPI servizioMessagisticaAPI = ServizioMessagisticaAPI.getInstance();
+        ServizioMessaggisticaAPI servizioMessaggisticaAPI = ServizioMessaggisticaAPI.getInstance();
 
         String corso = studente.getCorso();
         String LISTACORSI = "ListaCorsi";
 
-        servizioMessagisticaAPI.recuperaListaCorsi(URL_BROKER, corso, LISTACORSI);
+        servizioMessaggisticaAPI.recuperaListaCorsi(URL_BROKER, corso, LISTACORSI);
 
     }
 
@@ -201,21 +201,21 @@ public class GestoreRichieste {
     public void getCredenzialiChat(String esame){
 
         String getCredenziali = "getCredenziali";
-        ServizioMessagisticaAPI servizioMessagisticaAPI = ServizioMessagisticaAPI.getInstance();
+        ServizioMessaggisticaAPI servizioMessaggisticaAPI = ServizioMessaggisticaAPI.getInstance();
         String corsoDiStudio = studente.getCorso();
         String uuid = studente.getUuid();
 
-        servizioMessagisticaAPI.prendiCredenziali(URL_BROKER, uuid, esame, corsoDiStudio, getCredenziali);
+        servizioMessaggisticaAPI.prendiCredenziali(URL_BROKER, uuid, esame, corsoDiStudio, getCredenziali);
 
     }
 
     public void deleteSottoscrizioneChat(String esame){
 
         String deleteCredenziali = "deleteSottoscrizione";
-        ServizioMessagisticaAPI servizioMessagisticaAPI = ServizioMessagisticaAPI.getInstance();
+        ServizioMessaggisticaAPI servizioMessaggisticaAPI = ServizioMessaggisticaAPI.getInstance();
         String uuid = studente.getUuid();
 
-        servizioMessagisticaAPI.cancellaSottoscrizione(URL_BROKER, uuid, esame, deleteCredenziali);
+        servizioMessaggisticaAPI.cancellaSottoscrizione(URL_BROKER, uuid, esame, deleteCredenziali);
 
     }
 
@@ -270,9 +270,9 @@ public class GestoreRichieste {
 
     public void getMessageList(String codice){
 
-        ServizioMessagisticaAPI servizioMessagisticaAPI = ServizioMessagisticaAPI.getInstance();
+        ServizioMessaggisticaAPI servizioMessaggisticaAPI = ServizioMessaggisticaAPI.getInstance();
         String chatURL = "myChat";
-        servizioMessagisticaAPI.getMessageList(URL_BROKER, codice, chatURL);
+        servizioMessaggisticaAPI.getMessageList(URL_BROKER, codice, chatURL);
 
     }
 
@@ -281,16 +281,16 @@ public class GestoreRichieste {
         String mittente = getNomeStudente()+" "+getCognomeStudente();
         String uid = getUidStudente();
 
-        ServizioMessagisticaAPI servizioMessagisticaAPI = ServizioMessagisticaAPI.getInstance();
-        servizioMessagisticaAPI.invioMessaggio(testo, mittente, uid);
+        ServizioMessaggisticaAPI servizioMessaggisticaAPI = ServizioMessaggisticaAPI.getInstance();
+        servizioMessaggisticaAPI.invioMessaggio(testo, mittente, uid);
 
     }
 
     public void aggiornaListaMessaggi(){
 
-        ServizioMessagisticaAPI servizioMessagisticaAPI = ServizioMessagisticaAPI.getInstance();
+        ServizioMessaggisticaAPI servizioMessaggisticaAPI = ServizioMessaggisticaAPI.getInstance();
 
-        servizioMessagisticaAPI.refreshMessageList();
+        servizioMessaggisticaAPI.refreshMessageList();
 
 
     }
@@ -390,38 +390,6 @@ public class GestoreRichieste {
         return listaNomiBiblioteca;
     }
 
-    public ArrayList<String> getListaOraInizio(){
-
-        ArrayList<String> listaOraInizio = new ArrayList<>();
-
-        for(int i=0; i<this.studente.prenotazioni.size(); i++){
-            listaOraInizio.add(this.studente.prenotazioni.get(i).getOraInizio());
-        }
-
-        return listaOraInizio;
-    }
-
-    public ArrayList<String> getListaOraFine(){
-
-        ArrayList<String> listaOraFine = new ArrayList<>();
-
-        for(int i=0; i<this.studente.prenotazioni.size(); i++){
-            listaOraFine.add(this.studente.prenotazioni.get(i).getOraFine());
-        }
-
-        return listaOraFine;
-    }
-
-    public ArrayList<String> getListaDataPren(){
-
-        ArrayList<String> listaDataPren = new ArrayList<>();
-
-        for(int i=0; i<this.studente.prenotazioni.size(); i++){
-            listaDataPren.add(this.studente.prenotazioni.get(i).getDataPrenotazione());
-        }
-
-        return listaDataPren;
-    }
 
     public ArrayList<String> getListaId(){
 

@@ -1,6 +1,5 @@
 package com.noiunina.view;
 
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;

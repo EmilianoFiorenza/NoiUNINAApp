@@ -8,4 +8,6 @@ public interface IChatView {
     void getCurrentChatTitle(String chatTitle);
     void refreshRecyclerView(ArrayList<String> listaTestoMessaggi, ArrayList<String> listaMittenti, ArrayList<String> listaUid);
     void clearEditText();
+    void errorInvioMessaggio();
+    void erroreAggiornamentoMessaggio();
 }

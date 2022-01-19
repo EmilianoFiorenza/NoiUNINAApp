@@ -118,4 +118,16 @@ public class ChatPresenter implements IChatPresenter{
     public void messageSent() {
         iChatView.clearEditText();
     }
+
+    @Override
+    public void erroreInvioMessaggio() {
+
+        iChatView.errorInvioMessaggio();
+    }
+
+    @Override
+    public void erroreAggiornamentoMessaggio() {
+
+        iChatView.erroreAggiornamentoMessaggio();
+    }
 }

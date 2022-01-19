@@ -98,10 +98,7 @@ public class DatiPrenotazionePresenter implements IDatiPrenotazionePresenter{
 
         GestoreRichieste sys = GestoreRichieste.getInstance();
 
-
-
         sys.eliminaPrenotazione(id);
-
 
     }
 

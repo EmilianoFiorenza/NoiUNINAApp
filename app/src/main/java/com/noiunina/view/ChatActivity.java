@@ -106,4 +106,26 @@ public class ChatActivity extends AppCompatActivity implements IChatView{
         );
     }
 
+    @Override
+    public void errorInvioMessaggio() {
+        ChatActivity.this.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast toast = Toast.makeText(getApplicationContext(),"Non è stato possibile inviare il messaggio.",Toast.LENGTH_SHORT);
+                toast.show();
+            }
+        });
+    }
+
+    @Override
+    public void erroreAggiornamentoMessaggio() {
+        ChatActivity.this.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast toast = Toast.makeText(getApplicationContext(),"Non è stato possibile aggiornare la conversazione.",Toast.LENGTH_SHORT);
+                toast.show();
+            }
+        });
+    }
+
 }

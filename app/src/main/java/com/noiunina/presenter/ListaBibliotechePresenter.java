@@ -15,9 +15,7 @@ public class ListaBibliotechePresenter {
 
     }
 
-    public ListaBibliotechePresenter(){
 
-    }
 
     public ArrayList<String> getListaBibliotecheDisponibili(){
 

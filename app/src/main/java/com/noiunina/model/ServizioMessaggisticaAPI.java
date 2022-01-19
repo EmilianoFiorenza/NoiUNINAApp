@@ -26,19 +26,19 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
-public class ServizioMessagisticaAPI {
+public class ServizioMessaggisticaAPI {
 
-    private static ServizioMessagisticaAPI instance = null;
+    private static ServizioMessaggisticaAPI instance = null;
 
     IHomeChatPresenter iHomeChatPresenter = new HomeChatPresenter();
     ISubscriptionPresenter iSubscriptionPresenter = new SubscriptionPresenter();
     IChatCorsiPresenter iChatCorsiPresenter = new ChatCorsiPresenter();
     IChatPresenter iChatPresenter = new ChatPresenter();
 
-    public static ServizioMessagisticaAPI getInstance() {
+    public static ServizioMessaggisticaAPI getInstance() {
 
         if (instance == null) {
-            instance = new ServizioMessagisticaAPI();
+            instance = new ServizioMessaggisticaAPI();
         }
         return instance;
 
@@ -456,6 +456,7 @@ public class ServizioMessagisticaAPI {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
                 e.printStackTrace();
+                iChatPresenter.erroreInvioMessaggio();
             }
 
             @Override
@@ -497,6 +498,7 @@ public class ServizioMessagisticaAPI {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
                 e.printStackTrace();
+                iChatPresenter.erroreAggiornamentoMessaggio();
             }
 
             @Override

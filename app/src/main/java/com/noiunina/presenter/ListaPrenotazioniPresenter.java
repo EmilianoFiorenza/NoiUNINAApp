@@ -29,27 +29,6 @@ public class ListaPrenotazioniPresenter {
         return sys.getListaNomiBiblioteca();
     }
 
-    public ArrayList<String> getListaOraInizio(){
-
-        GestoreRichieste sys = GestoreRichieste.getInstance();
-
-        return sys.getListaOraInizio();
-    }
-
-    public ArrayList<String> getListaOraFine(){
-
-        GestoreRichieste sys = GestoreRichieste.getInstance();
-
-        return sys.getListaOraFine();
-    }
-
-    public ArrayList<String> getListaDataPren(){
-
-        GestoreRichieste sys = GestoreRichieste.getInstance();
-
-        return sys.getListaDataPren();
-    }
-
     public ArrayList<String> getListaId(){
 
         GestoreRichieste sys = GestoreRichieste.getInstance();
