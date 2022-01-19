@@ -475,6 +475,7 @@ public class ServizioMessaggisticaAPI {
                 else{
                     String TAG1 = "RISPOSTA SERVIZIO INVIO LISTA CHAT";
                     Log.i(TAG1,"Non è stato possibile aggiornare la chat");
+                    iChatPresenter.erroreInvioMessaggio();
                 }
 
             }
@@ -515,6 +516,7 @@ public class ServizioMessaggisticaAPI {
                 else{
                     String TAG1 = "RISPOSTA SERVIZIO AGGIORNA LISTA CHAT";
                     Log.i(TAG1,"Non è stato possibile aggiornare la chat");
+                    iChatPresenter.erroreAggiornamentoMessaggio();
                 }
 
             }
